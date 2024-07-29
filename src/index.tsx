@@ -100,7 +100,7 @@ const App: React.FC<props> = ({ siteId }) => {
   const queryParams = getQueryParams(scriptSrc)
   const siteId = queryParams.siteId
 
-  if (!siteId) {
+  if (process.env.ENVIRONMENT !== 'local' && !siteId) {
     throw new Error('siteId not found')
   }
 
