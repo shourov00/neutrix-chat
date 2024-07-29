@@ -13,8 +13,15 @@ import {
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 
-const App: React.FC = () => {
+interface props {
+  siteId?: string
+}
+
+const App: React.FC<props> = ({ siteId }) => {
   const [open, setOpen] = React.useState(true)
+
+  // TODO: make api calls with SITE_ID
+  console.log('SITE_ID', siteId)
 
   useEffect(() => {
     addResponseMessage('Welcome')
@@ -65,6 +72,38 @@ const App: React.FC = () => {
 }
 
 ;(function () {
+  const getCurrentScriptSrc = (): string => {
+    const currentScript = document.currentScript as HTMLScriptElement
+    if (!currentScript) {
+      throw new Error('No script is currently being executed.')
+    }
+    return currentScript.src
+  }
+
+  const getQueryParams = (url: string): Record<string, string> => {
+    const params: Record<string, string> = {}
+    const queryString = url.split('?')[1]
+    if (!queryString) {
+      return params
+    }
+    const queryArray = queryString.split('&')
+
+    queryArray.forEach((param) => {
+      const [key, value] = param.split('=')
+      params[key] = decodeURIComponent(value)
+    })
+
+    return params
+  }
+
+  const scriptSrc = getCurrentScriptSrc()
+  const queryParams = getQueryParams(scriptSrc)
+  const siteId = queryParams.siteId
+
+  if (!siteId) {
+    throw new Error('siteId not found')
+  }
+
   const widgetContainer = document.createElement('div')
   widgetContainer.id = 'root'
   widgetContainer.style.zIndex = '9999'
@@ -75,7 +114,7 @@ const App: React.FC = () => {
   )
   root.render(
     <React.StrictMode>
-      <App />
+      <App siteId={siteId} />
     </React.StrictMode>,
   )
 })()
