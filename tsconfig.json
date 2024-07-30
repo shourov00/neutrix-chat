@@ -7,7 +7,8 @@
     "strict": true,
     "esModuleInterop": true,
     "jsx": "react",
-    "baseUrl": "./src",
+    "baseUrl": ".",
+    "resolveJsonModule": true,
     "paths": {
       "@/*": ["*"]
     }
