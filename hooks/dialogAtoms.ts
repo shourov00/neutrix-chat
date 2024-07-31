@@ -11,7 +11,6 @@ export const openDialogAtom = atom(
       set(dialogQueueAtom, [...queue, dialogId])
     }
     set(currentDialogAtom, dialogId)
-    console.log(get(dialogQueueAtom))
   },
 )
 

@@ -1,15 +1,3 @@
-export enum AnnouncementStepEnum {
-  CONTENT = 'content',
-  AUDIENCE = 'audience',
-  DELIVERY = 'delivery',
-  SUMMARY = 'summary',
-}
-
-export enum AnnouncementEnumType {
-  STICKER = 'sticker',
-  LIGHTBOX = 'lightbox',
-}
-
 export enum LocationAudienceSourceEnum {
   ALL = 'all',
   SPECIFIC = 'specific',
@@ -18,12 +6,6 @@ export enum LocationAudienceSourceEnum {
 export enum LocationAudienceMatchType {
   CONTAINS = 'contains',
   EXACT = 'exact',
-}
-
-export enum AnnouncementCategoryEnumType {
-  PROMO = 'promo',
-  UPDATES = 'update',
-  EVENT = 'event',
 }
 
 export enum SurveyStepEnum {
@@ -35,7 +17,7 @@ export enum SurveyStepEnum {
   SUMMARY = 'summary',
 }
 
-export enum SurveyStatusEnumType {
+export enum CommunicationStatusEnumType {
   READY = 'ready',
   PAUSED = 'paused',
   ACTIVE = 'active',
@@ -67,7 +49,7 @@ export interface AudienceRule {
   value: AudienceRuleValue
 }
 
-interface AudienceSettings {
+export interface AudienceSettings {
   ruleType: string
   randomSamplingPercent: number
   rules: AudienceRule[][]
@@ -97,13 +79,15 @@ export interface QuestionMeta {
   choices?: QuestionChoices[]
   multipleSelect?: boolean
   includeOther?: boolean
+  comment?: string
+  commentPreview?: string
 }
 
 export interface Question {
   meta?: QuestionMeta
   subtitle?: string | null
   includeSubtitle?: boolean
-  id?: string
+  id: string
   title?: string
   type?: string
   order?: number
@@ -124,11 +108,12 @@ export interface ThanksSettings {
   title: string
   allowFeedback: boolean
   button: ThanksButton | null
+  enabled?: boolean
 }
 
 export interface Thanks {
   default: ThanksSettings
-  lowRating?: (ThanksSettings & { enabled: boolean }) | null
+  lowRating?: ThanksSettings
 }
 
 export interface Settings {
@@ -151,7 +136,7 @@ export interface Survey {
   siteId: string
   type: SurveyEnumType
   subType: SurveyEnumSubType
-  status: SurveyStatusEnumType
+  status: CommunicationStatusEnumType
   draft: Draft
   settings: Settings
 }

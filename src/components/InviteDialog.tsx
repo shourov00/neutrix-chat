@@ -14,6 +14,7 @@ import ActionButton from '@/src/components/ui/action-button'
 import RatingDialog from '@/src/components/RatingDialog'
 import DialogWrapper from '@/src/components/DialogWrapper'
 import { useDialog } from '@/hooks/useDialog'
+import OpenEndedDialog from '@/src/components/OpenEndedDialog'
 
 interface props {
   invite: InviteSettings
@@ -67,6 +68,10 @@ const InviteDialog = ({ invite, survey, id }: props) => {
 
       {showQuestions && survey.type === SurveyEnumType.RATING && (
         <RatingDialog survey={survey} id={id + 1} />
+      )}
+
+      {showQuestions && survey.type === SurveyEnumType.OPEN_ENDED && (
+        <OpenEndedDialog survey={survey} id={id + 2} />
       )}
     </>
   )
