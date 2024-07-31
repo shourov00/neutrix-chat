@@ -1,22 +1,26 @@
-import { useAtom } from 'jotai';
-import { openDialogAtom, closeDialogAtom, currentDialogAtom } from './dialogAtoms';
+import { useAtom } from 'jotai'
+import {
+  openDialogAtom,
+  closeDialogAtom,
+  currentDialogAtom,
+} from './dialogAtoms'
 
 export const useDialog = () => {
-  const [currentDialog] = useAtom(currentDialogAtom);
-  const [, openDialog] = useAtom(openDialogAtom);
-  const [, closeDialog] = useAtom(closeDialogAtom);
+  const [currentDialog] = useAtom(currentDialogAtom)
+  const [, openDialog] = useAtom(openDialogAtom)
+  const [, closeDialog] = useAtom(closeDialogAtom)
 
   const open = (dialogId: string) => {
-    openDialog(dialogId);
-  };
+    openDialog(dialogId)
+  }
 
   const close = () => {
-    closeDialog();
-  };
+    closeDialog()
+  }
 
   return {
     currentDialog,
     open,
     close,
-  };
-};
+  }
+}

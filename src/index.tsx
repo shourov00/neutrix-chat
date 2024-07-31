@@ -2,7 +2,6 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from '@/src/App'
 import QueryClientProvider from '@/src/QueryClientProvider'
-
 ;(function () {
   const getCurrentScriptSrc = (): string => {
     const currentScript = document.currentScript as HTMLScriptElement
