@@ -14,6 +14,11 @@ module.exports = {
   devServer: {
     open: true,
     host: 'localhost',
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers':
+        'Origin, X-Requested-With, Content-Type, Accept',
+    },
   },
   plugins: [
     new HtmlWebpackPlugin({

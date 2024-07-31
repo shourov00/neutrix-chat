@@ -1,2 +1,1 @@
-export const SURVEYS = 'surveys'
-export const ANNOUNCEMENTS = 'announcements'
+export const SITE_DATA = 'site_data'

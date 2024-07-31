@@ -3,6 +3,22 @@ export enum LocationAudienceSourceEnum {
   SPECIFIC = 'specific',
 }
 
+export enum CommunicationRuleEnumType {
+  URL = 'url',
+  TIME = 'time',
+  DEVICE = 'device',
+}
+
+export enum CommunicationRuleURLEnumType {
+  ALL = 'all',
+  SPECIFIC = 'specific',
+}
+
+export enum CommunicationRuleURLMatchEnumType {
+  CONTAINS = 'contains',
+  EXACT = 'exact',
+}
+
 export enum LocationAudienceMatchType {
   CONTAINS = 'contains',
   EXACT = 'exact',

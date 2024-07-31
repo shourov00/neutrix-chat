@@ -6,137 +6,65 @@ import { Survey, SurveyEnumType } from '@/src/models/surveyModels'
 import InviteDialog from '@/src/components/InviteDialog'
 import RatingDialog from '@/src/components/RatingDialog'
 import { useQuery } from '@tanstack/react-query'
-import { ANNOUNCEMENTS, SURVEYS } from '@/api/types'
-import { getAnnouncements, getSurveys } from '@/api/surveys'
+import { SITE_DATA } from '@/api/types'
 import { v4 as uuidv4 } from 'uuid'
 import AnnouncementDialog from '@/src/components/AnnouncementDialog'
 import MultipleChoiceDialog from '@/src/components/MultipleChoiceDialog'
 import LikeDislikeDialog from '@/src/components/LikeDislikeDialog'
 import OpenEndedDialog from '@/src/components/OpenEndedDialog'
 import { setSiteIdAtom } from '@/hooks/siteIdStore'
+import { filterSurveys } from '@/utils/surveys.utils'
+import { filterAnnouncements } from '@/utils/announcement.utils'
 import {
   Announcement,
   AnnouncementEnumType,
 } from '@/src/models/announcementModels'
-import { checkIfDurationExceeded } from '@/utils/date.utils'
+import { getSiteData } from '@/api'
 
 interface props {
   siteId: string
 }
 
+interface SiteData {
+  surveys: Survey[]
+  announcements: Announcement[]
+}
+
 export default function App({ siteId }: props) {
-  const { data: surveys, isLoading } = useSurveys()
-  const { data: announcements, isLoading: isAnnouncementLoading } =
-    useAnnouncements()
+  const { data, isLoading } = useSiteData()
 
   useEffect(() => {
     addResponseMessage('Welcome')
-
-    // todo remove hardcoded siteID
-    setSiteIdAtom('123123123')
+    // TODO: remove hardcoded siteID
+    setSiteIdAtom(siteId || '123123123')
   }, [siteId])
 
   const handleNewUserMessage = (newMessage: string) => {
     console.log(`New message incoming! ${newMessage}`)
   }
 
-  const ratingSurveys =
-    surveys?.filter(
-      (survey: Survey) =>
-        survey.type === SurveyEnumType.RATING &&
-        checkIfDurationExceeded(
-          survey?.settings?.delivery?.startAt,
-          survey?.settings?.delivery?.durationDays,
-        ),
-    ) || []
+  const surveys = data?.surveys || []
+  const announcements = data?.announcements || []
 
-  const multipleChoiceSurveys =
-    surveys?.filter(
-      (survey: Survey) =>
-        survey.type === SurveyEnumType.MULTIPLE_CHOICE &&
-        checkIfDurationExceeded(
-          survey?.settings?.delivery?.startAt,
-          survey?.settings?.delivery?.durationDays,
-        ),
-    ) || []
+  const ratingSurveys = filterSurveys(SurveyEnumType.RATING, surveys)
+  const multipleChoiceSurveys = filterSurveys(
+    SurveyEnumType.MULTIPLE_CHOICE,
+    surveys,
+  )
+  const likeDislikeSurveys = filterSurveys(SurveyEnumType.LIKE_DISLIKE, surveys)
+  const openEndedSurveys = filterSurveys(SurveyEnumType.OPEN_ENDED, surveys)
 
-  const likeDislikeSurveys =
-    surveys?.filter(
-      (survey: Survey) =>
-        survey.type === SurveyEnumType.LIKE_DISLIKE &&
-        checkIfDurationExceeded(
-          survey?.settings?.delivery?.startAt,
-          survey?.settings?.delivery?.durationDays,
-        ),
-    ) || []
-
-  const openEndedSurveys =
-    surveys?.filter(
-      (survey: Survey) =>
-        survey.type === SurveyEnumType.OPEN_ENDED &&
-        checkIfDurationExceeded(
-          survey?.settings?.delivery?.startAt,
-          survey?.settings?.delivery?.durationDays,
-        ),
-    ) || []
-
-  const stickerAnnouncements =
-    announcements?.filter(
-      (announcement: Announcement) =>
-        announcement.type === AnnouncementEnumType.STICKER,
-    ) || []
+  const stickerAnnouncements = filterAnnouncements(
+    AnnouncementEnumType.STICKER,
+    announcements,
+  )
 
   return (
     <>
-      {ratingSurveys.map((survey: Survey) =>
-        survey?.settings?.invite?.enabled ? (
-          <InviteDialog
-            key={survey._id}
-            invite={survey?.settings?.invite}
-            survey={survey}
-            id={uuidv4().toString()}
-          />
-        ) : (
-          <RatingDialog
-            key={survey._id}
-            survey={survey}
-            id={uuidv4().toString()}
-          />
-        ),
-      )}
-
-      {multipleChoiceSurveys.map((survey: Survey) => (
-        <MultipleChoiceDialog
-          key={survey._id}
-          survey={survey}
-          id={uuidv4().toString()}
-        />
-      ))}
-
-      {likeDislikeSurveys.map((survey: Survey) => (
-        <LikeDislikeDialog
-          key={survey._id}
-          survey={survey}
-          id={uuidv4().toString()}
-        />
-      ))}
-
-      {openEndedSurveys.map((survey: Survey) =>
-        survey?.settings?.invite?.enabled ? (
-          <InviteDialog
-            key={survey._id}
-            invite={survey?.settings?.invite}
-            survey={survey}
-            id={uuidv4().toString()}
-          />
-        ) : (
-          <OpenEndedDialog
-            key={survey._id}
-            survey={survey}
-            id={uuidv4().toString()}
-          />
-        ),
-      )}
+      {renderSurveyDialogs(ratingSurveys, RatingDialog)}
+      {renderSurveyDialogs(multipleChoiceSurveys, MultipleChoiceDialog)}
+      {renderSurveyDialogs(likeDislikeSurveys, LikeDislikeDialog)}
+      {renderSurveyDialogs(openEndedSurveys, OpenEndedDialog)}
 
       {!isLoading && <AnnouncementDialog id={uuidv4().toString()} />}
 
@@ -149,14 +77,30 @@ export default function App({ siteId }: props) {
   )
 }
 
-const useSurveys = () =>
-  useQuery({
-    queryKey: [SURVEYS],
-    queryFn: () => getSurveys().then((res) => res.data.data),
-  })
+const renderSurveyDialogs = (
+  surveys: Survey[],
+  DialogComponent: React.FC<any>,
+) => {
+  return surveys.map((survey: Survey) =>
+    survey?.settings?.invite?.enabled ? (
+      <InviteDialog
+        key={survey._id}
+        invite={survey?.settings?.invite}
+        survey={survey}
+        id={uuidv4().toString()}
+      />
+    ) : (
+      <DialogComponent
+        key={survey._id}
+        survey={survey}
+        id={uuidv4().toString()}
+      />
+    ),
+  )
+}
 
-const useAnnouncements = () =>
+const useSiteData = () =>
   useQuery({
-    queryKey: [ANNOUNCEMENTS],
-    queryFn: () => getAnnouncements().then((res) => res.data.data),
+    queryKey: [SITE_DATA],
+    queryFn: () => getSiteData().then((res) => res.data.data),
   })
