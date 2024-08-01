@@ -46,7 +46,8 @@ import QueryClientProvider from '@/src/QueryClientProvider'
   root.render(
     <React.StrictMode>
       <QueryClientProvider>
-        <App siteId={siteId} />
+        {/*TODO -> remove hard coded siteid */}
+        <App siteId={siteId || '123123123'} />
       </QueryClientProvider>
     </React.StrictMode>,
   )

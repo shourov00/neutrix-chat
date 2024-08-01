@@ -6,10 +6,11 @@ import { currentDialogAtom } from '@/hooks/dialogAtoms'
 
 interface DialogProps {
   id: string
+  modal?: boolean
   children: React.ReactNode
 }
 
-const DialogWrapper = ({ id, children }: DialogProps) => {
+const DialogWrapper = ({ id, modal = false, children }: DialogProps) => {
   const [currentDialog] = useAtom(currentDialogAtom)
   const { close, open } = useDialog()
   const isOpen = currentDialog === id
@@ -21,7 +22,7 @@ const DialogWrapper = ({ id, children }: DialogProps) => {
   return (
     <>
       {currentDialog && (
-        <Dialog open={isOpen} onOpenChange={close} modal={false}>
+        <Dialog open={isOpen} onOpenChange={close} modal={modal}>
           {children}
         </Dialog>
       )}

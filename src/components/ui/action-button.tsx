@@ -1,7 +1,7 @@
 import { Button, ButtonProps } from '@/src/components/ui/button'
 import React from 'react'
 import { cn } from '@/lib/utils'
-import { Checkbox } from '@/src/components/ui/checkbox'
+import { CheckIcon } from 'lucide-react'
 
 interface props extends ButtonProps {
   title: string
@@ -27,11 +27,14 @@ const ActionButton = ({
       {...props}
     >
       {isCheckBox && (
-        <Checkbox
-          checked={isChecked}
-          onClick={props.onClick}
-          className={'me-2'}
-        />
+        <div
+          className={cn(
+            'w-4 h-4 border border-primary rounded mr-2',
+            isChecked && 'bg-primary',
+          )}
+        >
+          {isChecked && <CheckIcon className={'w-3.5 h-3.5'} />}
+        </div>
       )}
       {title}
     </Button>

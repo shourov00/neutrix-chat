@@ -9,14 +9,21 @@ import React from 'react'
 import DialogWrapper from '@/src/components/DialogWrapper'
 import { useDialog } from '@/hooks/useDialog'
 import { cn } from '@/lib/utils'
+import { Announcement } from '@/src/models/announcementModels'
 
 interface Props {
   id: string
   reverseColor?: boolean
+  announcement: Announcement
 }
 
-const AnnouncementDialog = ({ id, reverseColor }: Props) => {
+const AnnouncementStickerDialog = ({
+  id,
+  reverseColor,
+  announcement,
+}: Props) => {
   const { close } = useDialog()
+  const display = announcement?.settings?.display
   return (
     <>
       <DialogWrapper id={id}>
@@ -30,16 +37,14 @@ const AnnouncementDialog = ({ id, reverseColor }: Props) => {
           )}
         >
           <img
-            src={
-              'https://images.pexels.com/photos/2047905/pexels-photo-2047905.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
-            }
-            alt={'password'}
-            className={'rounded-lg object-cover w-full h-[126px]'}
+            src={display?.image?.url || ''}
+            alt={display?.image?.name || ''}
+            className={'rounded-t-lg object-cover w-full h-[160px]'}
           />
 
           <DialogHeader>
-            <DialogTitle>Hi, welcome to our website. </DialogTitle>
-            <DialogDescription>This is an announcement.</DialogDescription>
+            <DialogTitle>{display?.title}</DialogTitle>
+            <DialogDescription>{display?.content}</DialogDescription>
           </DialogHeader>
 
           <Button
@@ -48,9 +53,13 @@ const AnnouncementDialog = ({ id, reverseColor }: Props) => {
               reverseColor &&
                 'bg-white text-primary hover:bg-white hover:text-primary',
             )}
-            onClick={close}
+            onClick={() => {
+              if (display?.actionButton?.action === 'dismiss') {
+                close()
+              }
+            }}
           >
-            Got it
+            {display?.actionButton?.dismissLabel}
           </Button>
         </DialogContent>
       </DialogWrapper>
@@ -58,4 +67,4 @@ const AnnouncementDialog = ({ id, reverseColor }: Props) => {
   )
 }
 
-export default AnnouncementDialog
+export default AnnouncementStickerDialog
