@@ -1,11 +1,11 @@
-import React, { useCallback, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { addResponseMessage, Widget } from 'react-chat-widget'
 import './global.css'
 import 'react-chat-widget/lib/styles.css'
 import { Survey, SurveyEnumType } from '@/src/models/surveyModels'
 import InviteDialog from '@/src/components/InviteDialog'
 import RatingDialog from '@/src/components/RatingDialog'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { SITE_DATA } from '@/api/types'
 import { v4 as uuidv4 } from 'uuid'
 import AnnouncementStickerDialog from '@/src/components/AnnouncementStickerDialog'
@@ -19,10 +19,12 @@ import {
   Announcement,
   AnnouncementEnumType,
 } from '@/src/models/announcementModels'
-import { addVisitor, getSiteData } from '@/api'
+import { getSiteData } from '@/api'
 import AnnouncementLightboxDialog from '@/src/components/AnnouncementLightboxDialog'
 import { useVisitorSession } from '@/hooks/useVisitorSession'
-import { generateUniqueVisitorName } from '@/utils/visitor.utils'
+import { VisitorResponse } from '@/src/models/responseModels'
+import { useAddVisitor } from '@/hooks/useAddVisitor'
+import { useAddVisitorResponse } from '@/hooks/useAddVisitorResponse'
 
 interface props {
   siteId: string
@@ -31,35 +33,15 @@ interface props {
 export default function App({ siteId }: props) {
   const { data, isLoading } = useSiteData()
   const [dialogs, setDialogs] = React.useState<React.JSX.Element[]>([])
-  const { value } = useVisitorSession()
+  const { value: sessionId } = useVisitorSession()
 
-  const addNewVisitor = useCallback(() => {
-    return addVisitor({
-      ...generateUniqueVisitorName(),
-      lastSessionId: value,
-      siteId,
-      blocked: false,
-      locale: [navigator.language],
-      mood: 25,
-      starred: false,
-      visits: 1,
-      url: {
-        ...window.location,
-      },
-    })
-  }, [siteId, value])
-
-  const { mutate: addVisitorMutation } = useMutation({
-    mutationFn: addNewVisitor,
-    onError: (error) => {
-      console.log(error)
-    },
-  })
+  const { mutate: addVisitorMutation } = useAddVisitor(siteId, sessionId)
+  const { mutate: addVisitorResponseMutation } = useAddVisitorResponse(siteId)
 
   useEffect(() => {
     addResponseMessage('Welcome')
     setSiteIdAtom(siteId)
-  }, [siteId, value])
+  }, [siteId, sessionId])
 
   const handleNewUserMessage = (newMessage: string) => {
     console.log(`New message incoming! ${newMessage}`)
@@ -69,45 +51,7 @@ export default function App({ siteId }: props) {
     if (!isLoading && data) {
       addVisitorMutation()
 
-      const surveys = data?.surveys || []
-      const announcements = data?.announcements || []
-
-      const ratingSurveys = filterSurveys(SurveyEnumType.RATING, surveys)
-      const multipleChoiceSurveys = filterSurveys(
-        SurveyEnumType.MULTIPLE_CHOICE,
-        surveys,
-      )
-      const likeDislikeSurveys = filterSurveys(
-        SurveyEnumType.LIKE_DISLIKE,
-        surveys,
-      )
-      const openEndedSurveys = filterSurveys(SurveyEnumType.OPEN_ENDED, surveys)
-
-      const stickerAnnouncements = filterAnnouncements(
-        AnnouncementEnumType.STICKER,
-        announcements,
-      )
-      const lightboxAnnouncements = filterAnnouncements(
-        AnnouncementEnumType.LIGHTBOX,
-        announcements,
-      )
-
-      // to prevent multiple re-rendering add the models in a state and render queue based.
-      const newDialogs = [
-        ...renderSurveyDialogs(ratingSurveys, RatingDialog),
-        ...renderSurveyDialogs(multipleChoiceSurveys, MultipleChoiceDialog),
-        ...renderSurveyDialogs(likeDislikeSurveys, LikeDislikeDialog),
-        ...renderSurveyDialogs(openEndedSurveys, OpenEndedDialog),
-        ...renderAnnouncementsDialogs(
-          stickerAnnouncements,
-          AnnouncementStickerDialog,
-        ),
-        ...renderAnnouncementsDialogs(
-          lightboxAnnouncements,
-          AnnouncementLightboxDialog,
-        ),
-      ]
-
+      const newDialogs = generateDialogs(data, addVisitorResponseMutation)
       setDialogs(newDialogs)
     }
   }, [isLoading, data])
@@ -125,33 +69,98 @@ export default function App({ siteId }: props) {
   )
 }
 
+const generateDialogs = (
+  data: any,
+  addVisitorResponseMutation?: (response: VisitorResponse) => void,
+): React.JSX.Element[] => {
+  const surveys = data?.surveys || []
+  const announcements = data?.announcements || []
+
+  const dialogs: React.JSX.Element[] = [
+    ...renderSurveyDialogs(
+      SurveyEnumType.RATING,
+      surveys,
+      RatingDialog,
+      addVisitorResponseMutation,
+    ),
+    ...renderSurveyDialogs(
+      SurveyEnumType.MULTIPLE_CHOICE,
+      surveys,
+      MultipleChoiceDialog,
+      addVisitorResponseMutation,
+    ),
+    ...renderSurveyDialogs(
+      SurveyEnumType.LIKE_DISLIKE,
+      surveys,
+      LikeDislikeDialog,
+      addVisitorResponseMutation,
+    ),
+    ...renderSurveyDialogs(
+      SurveyEnumType.OPEN_ENDED,
+      surveys,
+      OpenEndedDialog,
+      addVisitorResponseMutation,
+    ),
+    ...renderAnnouncementsDialogs(
+      AnnouncementEnumType.STICKER,
+      announcements,
+      AnnouncementStickerDialog,
+      addVisitorResponseMutation,
+    ),
+    ...renderAnnouncementsDialogs(
+      AnnouncementEnumType.LIGHTBOX,
+      announcements,
+      AnnouncementLightboxDialog,
+      addVisitorResponseMutation,
+    ),
+  ]
+
+  return dialogs
+}
+
 const renderSurveyDialogs = (
+  surveyType: SurveyEnumType,
   surveys: Survey[],
   DialogComponent: React.FC<any>,
+  addVisitorResponseMutation?: (response: VisitorResponse) => void,
 ) => {
-  return surveys.map((survey: Survey) =>
+  const filteredSurveys = filterSurveys(surveyType, surveys)
+  return filteredSurveys.map((survey: Survey) =>
     survey?.settings?.invite?.enabled ? (
       <InviteDialog
         key={survey._id}
         invite={survey?.settings?.invite}
         survey={survey}
         id={uuidv4()}
+        handleResponse={addVisitorResponseMutation}
       />
     ) : (
-      <DialogComponent key={survey._id} survey={survey} id={uuidv4()} />
+      <DialogComponent
+        key={survey._id}
+        survey={survey}
+        id={uuidv4()}
+        handleResponse={addVisitorResponseMutation}
+      />
     ),
   )
 }
 
 const renderAnnouncementsDialogs = (
+  announcementType: AnnouncementEnumType,
   announcements: Announcement[],
   DialogComponent: React.FC<any>,
+  addVisitorResponseMutation?: (response: VisitorResponse) => void,
 ) => {
-  return announcements.map((announcement: Announcement) => (
+  const filteredAnnouncements = filterAnnouncements(
+    announcementType,
+    announcements,
+  )
+  return filteredAnnouncements.map((announcement: Announcement) => (
     <DialogComponent
       key={announcement._id}
       announcement={announcement}
       id={uuidv4()}
+      handleResponse={addVisitorResponseMutation}
     />
   ))
 }

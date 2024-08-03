@@ -11,13 +11,15 @@ import DialogWrapper from '@/src/components/DialogWrapper'
 import { useDialog } from '@/hooks/useDialog'
 import { Button } from '@/src/components/ui/button'
 import ThankYouDialog from '@/src/components/ThankYouDialog'
+import { VisitorChoice, VisitorResponse } from '@/src/models/responseModels'
 
 interface props {
   survey: Survey
   id: string
+  handleResponse?: (response: VisitorResponse) => void
 }
 
-const MultipleChoiceDialog = ({ survey, id }: props) => {
+const MultipleChoiceDialog = ({ survey, id, handleResponse }: props) => {
   const { close } = useDialog()
   const questions = survey?.settings?.questions?.data
   const [question, setQuestion] = React.useState<Question | null>(
@@ -26,9 +28,11 @@ const MultipleChoiceDialog = ({ survey, id }: props) => {
   const [checkedValue, setCheckedValue] = React.useState<string[]>([])
   const [current, setCurrent] = React.useState(1)
   const [showThanks, setShowThanks] = React.useState(false)
+  const [startTime, setStartTime] = React.useState<number>(Date.now())
 
   useEffect(() => {
     setQuestion(questions[current - 1])
+    setStartTime(Date.now())
   }, [current])
 
   const handleChecked = (name: string) => {
@@ -37,6 +41,50 @@ const MultipleChoiceDialog = ({ survey, id }: props) => {
     } else {
       setCheckedValue(checkedValue.filter((item) => item !== name))
     }
+  }
+
+  const handleMultipleChoiceResponse = () => {
+    const choices = question?.meta?.choices?.filter((item) =>
+      checkedValue.includes(item.name),
+    )
+    const responseTime = Date.now() - startTime
+    const newChoices: VisitorChoice[] =
+      choices?.map((item) => ({
+        name: item.name,
+        id: item?.id || '',
+        responseTime,
+      })) || []
+
+    const response: VisitorResponse = {
+      responseId: survey?._id,
+      responseType: 'survey',
+      status: 'completed',
+      meta: {
+        questions: {
+          data: [
+            {
+              id: question?.id,
+              meta: {
+                choices: newChoices,
+              },
+              type: survey?.type,
+            },
+          ],
+        },
+      },
+    }
+
+    handleResponse && handleResponse(response)
+  }
+
+  const moveNext = () => {
+    setCurrent((prev) => prev + 1)
+    setStartTime(Date.now())
+  }
+
+  const movePrevious = () => {
+    setCurrent((prev) => prev - 1)
+    setStartTime(Date.now())
   }
 
   return (
@@ -70,7 +118,12 @@ const MultipleChoiceDialog = ({ survey, id }: props) => {
                         e.preventDefault()
                         handleChecked(choice?.name)
                       } else {
-                        close()
+                        if (current !== questions?.length) {
+                          moveNext()
+                        } else {
+                          close()
+                          setShowThanks(true)
+                        }
                       }
                     }}
                     isChecked={checkedValue.includes(choice?.name)}
@@ -85,8 +138,13 @@ const MultipleChoiceDialog = ({ survey, id }: props) => {
                   className={'font-bold h-8 mt-4'}
                   onClick={() => {
                     if (checkedValue.length > 0) {
-                      close()
-                      setShowThanks(true)
+                      handleMultipleChoiceResponse()
+                      if (current !== questions?.length) {
+                        moveNext()
+                      } else {
+                        close()
+                        setShowThanks(true)
+                      }
                     }
                   }}
                 >
@@ -105,7 +163,7 @@ const MultipleChoiceDialog = ({ survey, id }: props) => {
                   size={'sm'}
                   title={'Prev'}
                   disabled={current === 1}
-                  onClick={() => setCurrent((prev) => prev - 1)}
+                  onClick={movePrevious}
                 />
                 <div className={'tracking-wider'}>
                   {current}/{questions?.length}
@@ -114,7 +172,7 @@ const MultipleChoiceDialog = ({ survey, id }: props) => {
                   size={'sm'}
                   title={'Next'}
                   disabled={current === questions?.length}
-                  onClick={() => setCurrent((prev) => prev + 1)}
+                  onClick={moveNext}
                 />
               </div>
             )}

@@ -88,6 +88,7 @@ export interface InviteSettings {
 }
 
 export interface QuestionChoices {
+  id?: string
   name: string
 }
 

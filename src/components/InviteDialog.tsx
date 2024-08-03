@@ -15,11 +15,13 @@ import RatingDialog from '@/src/components/RatingDialog'
 import DialogWrapper from '@/src/components/DialogWrapper'
 import { useDialog } from '@/hooks/useDialog'
 import OpenEndedDialog from '@/src/components/OpenEndedDialog'
+import { VisitorResponse } from '@/src/models/responseModels'
 
 interface props {
   invite: InviteSettings
   survey: Survey
   id: string
+  handleResponse?: (response: VisitorResponse) => void
 }
 
 const InviteDialog = ({ invite, survey, id }: props) => {
