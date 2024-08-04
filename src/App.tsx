@@ -71,7 +71,7 @@ export default function App({ siteId }: props) {
 
 const generateDialogs = (
   data: any,
-  addVisitorResponseMutation?: (response: VisitorResponse) => void,
+  addVisitorResponseMutation: (response: VisitorResponse) => void,
 ): React.JSX.Element[] => {
   const surveys = data?.surveys || []
   const announcements = data?.announcements || []
@@ -123,7 +123,7 @@ const renderSurveyDialogs = (
   surveyType: SurveyEnumType,
   surveys: Survey[],
   DialogComponent: React.FC<any>,
-  addVisitorResponseMutation?: (response: VisitorResponse) => void,
+  addVisitorResponseMutation: (response: VisitorResponse) => void,
 ) => {
   const filteredSurveys = filterSurveys(surveyType, surveys)
   return filteredSurveys.map((survey: Survey) =>
@@ -150,7 +150,7 @@ const renderAnnouncementsDialogs = (
   announcementType: AnnouncementEnumType,
   announcements: Announcement[],
   DialogComponent: React.FC<any>,
-  addVisitorResponseMutation?: (response: VisitorResponse) => void,
+  addVisitorResponseMutation: (response: VisitorResponse) => void,
 ) => {
   const filteredAnnouncements = filterAnnouncements(
     announcementType,
