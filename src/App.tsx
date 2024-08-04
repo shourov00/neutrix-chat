@@ -9,7 +9,6 @@ import { useQuery } from '@tanstack/react-query'
 import { SITE_DATA } from '@/api/types'
 import { v4 as uuidv4 } from 'uuid'
 import AnnouncementStickerDialog from '@/src/components/AnnouncementStickerDialog'
-import MultipleChoiceDialog from '@/src/components/MultipleChoiceDialog'
 import LikeDislikeDialog from '@/src/components/LikeDislikeDialog'
 import OpenEndedDialog from '@/src/components/OpenEndedDialog'
 import { setSiteIdAtom } from '@/hooks/siteIdStore'
@@ -25,6 +24,8 @@ import { useVisitorSession } from '@/hooks/useVisitorSession'
 import { VisitorResponse } from '@/src/models/responseModels'
 import { useAddVisitor } from '@/hooks/useAddVisitor'
 import { useAddVisitorResponse } from '@/hooks/useAddVisitorResponse'
+import MultipleChoiceDialog from '@/src/components/MultipleChoiceDialog'
+import ChatInviteDialog from '@/src/components/ChatInviteDialog'
 
 interface props {
   siteId: string
@@ -34,7 +35,6 @@ export default function App({ siteId }: props) {
   const { data, isLoading } = useSiteData()
   const [dialogs, setDialogs] = React.useState<React.JSX.Element[]>([])
   const { value: sessionId } = useVisitorSession()
-
   const { mutate: addVisitorMutation } = useAddVisitor(siteId, sessionId)
   const { mutate: addVisitorResponseMutation } = useAddVisitorResponse(siteId)
 
@@ -77,6 +77,7 @@ const generateDialogs = (
   const announcements = data?.announcements || []
 
   const dialogs: React.JSX.Element[] = [
+    <ChatInviteDialog id={uuidv4()} />,
     ...renderSurveyDialogs(
       SurveyEnumType.RATING,
       surveys,

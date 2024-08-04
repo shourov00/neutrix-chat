@@ -52,3 +52,9 @@
       'calt' 1;
   }
 }
+
+.rcw-widget-container .rcw-close-widget-container {
+  .rcw-open-launcher {
+    margin: auto !important;
+  }
+}

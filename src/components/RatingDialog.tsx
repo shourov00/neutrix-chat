@@ -11,14 +11,17 @@ import ActionButton from '@/src/components/ui/action-button'
 import DialogWrapper from '@/src/components/DialogWrapper'
 import ThankYouDialog from '@/src/components/ThankYouDialog'
 import { useDialog } from '@/hooks/useDialog'
+import { VisitorChoice, VisitorResponse } from '@/src/models/responseModels'
+import { handleSurveyResponse, ratingNumberToText } from '@/utils/surveys.utils'
 
 interface props {
   survey: Survey
   id: string
+  handleResponse: (response: VisitorResponse) => void
 }
 
-const RatingDialog = ({ survey, id }: props) => {
-  const { close } = useDialog()
+const RatingDialog = ({ survey, id, handleResponse }: props) => {
+  const { close, currentDialog } = useDialog()
   const questions = survey?.settings?.questions?.data
   const [question, setQuestion] = React.useState<Question | null>(
     questions[0] || null,
@@ -29,6 +32,18 @@ const RatingDialog = ({ survey, id }: props) => {
   const [questionRating, setQuestionRating] = React.useState<
     Map<string, number>
   >(new Map())
+  const [startTime, setStartTime] = React.useState<number>(0)
+
+  useEffect(() => {
+    if (currentDialog === id) {
+      setStartTime(Date.now())
+      const response = handleSurveyResponse({
+        status: 'viewed',
+        survey,
+      })
+      handleResponse(response)
+    }
+  }, [currentDialog])
 
   useEffect(() => {
     setQuestion(questions[current - 1] || null)
@@ -39,23 +54,27 @@ const RatingDialog = ({ survey, id }: props) => {
       setQuestionRating((prevRatings) => {
         const newRatings = new Map(prevRatings)
         newRatings.set(question.id, rating)
+
+        if (current < questions.length) {
+          setCurrent((prev) => prev + 1)
+        } else if (current === questions.length) {
+          close()
+          const averageRating = calculateAverageRating(newRatings)
+          if (averageRating >= 4 && averageRating <= 5) {
+            setShowThanks(true)
+          } else {
+            setShowLowRatingThanks(true)
+          }
+        }
+
         return newRatings
       })
 
-      if (current < questions.length) {
-        setCurrent((prev) => prev + 1)
-      } else if (current === questions.length) {
-        close()
-        const averageRating = calculateAverageRating(questionRating)
-        if (averageRating >= 4 && averageRating <= 5) {
-          setShowThanks(true)
-        } else {
-          setShowLowRatingThanks(true)
-        }
-      }
+      handleLikeDislikeResponse(rating)
     }
   }
 
+  // added average rating to show thanks response
   const calculateAverageRating = (ratings: Map<string, number>) => {
     let total = 0
     let count = 0
@@ -66,10 +85,46 @@ const RatingDialog = ({ survey, id }: props) => {
     return count === 0 ? 0 : total / count
   }
 
+  const handleLikeDislikeResponse = (rating: number) => {
+    const responseTime = Date.now() - startTime
+    const choices: VisitorChoice[] = [
+      {
+        id: ratingNumberToText(rating),
+        name: ratingNumberToText(rating),
+        responseTime,
+      },
+    ]
+    const response = handleSurveyResponse({
+      status: current === questions?.length ? 'completed' : 'viewed',
+      survey,
+      question,
+      choices,
+    })
+    handleResponse(response)
+  }
+
+  const moveNext = () => {
+    setCurrent((prev) => prev + 1)
+    setStartTime(Date.now())
+  }
+
+  const movePrevious = () => {
+    setCurrent((prev) => prev - 1)
+    setStartTime(Date.now())
+  }
+
+  const handleDialogClose = () => {
+    const response = handleSurveyResponse({
+      status: 'dismissed',
+      survey,
+    })
+    handleResponse(response)
+  }
+
   return (
     <>
       {question && (
-        <DialogWrapper id={id}>
+        <DialogWrapper id={id} onClose={handleDialogClose}>
           <DialogContent
             onInteractOutside={(e) => {
               e.preventDefault()
@@ -98,7 +153,7 @@ const RatingDialog = ({ survey, id }: props) => {
                   size={'sm'}
                   title={'Prev'}
                   disabled={current === 1}
-                  onClick={() => setCurrent((prev) => prev - 1)}
+                  onClick={movePrevious}
                 />
                 <div className={'tracking-wider'}>
                   {current}/{questions?.length}
@@ -107,7 +162,7 @@ const RatingDialog = ({ survey, id }: props) => {
                   size={'sm'}
                   title={'Next'}
                   disabled={current === questions?.length}
-                  onClick={() => setCurrent((prev) => prev + 1)}
+                  onClick={moveNext}
                 />
               </div>
             )}
@@ -121,11 +176,20 @@ const RatingDialog = ({ survey, id }: props) => {
           thanks={survey?.settings?.thanks?.default}
         />
       )}
-      {showLowRatingThanks && survey?.settings?.thanks?.lowRating?.enabled && (
-        <ThankYouDialog
-          id={id + 2}
-          thanks={survey?.settings?.thanks?.lowRating}
-        />
+      {showLowRatingThanks && (
+        <>
+          {survey?.settings?.thanks?.lowRating?.enabled ? (
+            <ThankYouDialog
+              id={id + 2}
+              thanks={survey?.settings?.thanks?.lowRating}
+            />
+          ) : (
+            <ThankYouDialog
+              id={id + 1}
+              thanks={survey?.settings?.thanks?.default}
+            />
+          )}
+        </>
       )}
     </>
   )

@@ -12,15 +12,16 @@ import { useDialog } from '@/hooks/useDialog'
 import { Button } from '@/src/components/ui/button'
 import ThankYouDialog from '@/src/components/ThankYouDialog'
 import { VisitorChoice, VisitorResponse } from '@/src/models/responseModels'
+import { handleSurveyResponse } from '@/utils/surveys.utils'
 
 interface props {
   survey: Survey
   id: string
-  handleResponse?: (response: VisitorResponse) => void
+  handleResponse: (response: VisitorResponse) => void
 }
 
 const MultipleChoiceDialog = ({ survey, id, handleResponse }: props) => {
-  const { close } = useDialog()
+  const { close, currentDialog } = useDialog()
   const questions = survey?.settings?.questions?.data
   const [question, setQuestion] = React.useState<Question | null>(
     questions[0] || null,
@@ -28,11 +29,21 @@ const MultipleChoiceDialog = ({ survey, id, handleResponse }: props) => {
   const [checkedValue, setCheckedValue] = React.useState<string[]>([])
   const [current, setCurrent] = React.useState(1)
   const [showThanks, setShowThanks] = React.useState(false)
-  const [startTime, setStartTime] = React.useState<number>(Date.now())
+  const [startTime, setStartTime] = React.useState<number>(0)
 
   useEffect(() => {
-    setQuestion(questions[current - 1])
-    setStartTime(Date.now())
+    if (currentDialog === id) {
+      setStartTime(Date.now())
+      const response = handleSurveyResponse({
+        status: 'viewed',
+        survey,
+      })
+      handleResponse(response)
+    }
+  }, [currentDialog])
+
+  useEffect(() => {
+    setQuestion(questions[current - 1] || null)
   }, [current])
 
   const handleChecked = (name: string) => {
@@ -54,27 +65,13 @@ const MultipleChoiceDialog = ({ survey, id, handleResponse }: props) => {
         id: item?.id || '',
         responseTime,
       })) || []
-
-    const response: VisitorResponse = {
-      responseId: survey?._id,
-      responseType: 'survey',
-      status: 'completed',
-      meta: {
-        questions: {
-          data: [
-            {
-              id: question?.id,
-              meta: {
-                choices: newChoices,
-              },
-              type: survey?.type,
-            },
-          ],
-        },
-      },
-    }
-
-    handleResponse && handleResponse(response)
+    const response = handleSurveyResponse({
+      status: current === questions?.length ? 'completed' : 'viewed',
+      survey,
+      question,
+      choices: newChoices,
+    })
+    handleResponse(response)
   }
 
   const moveNext = () => {
@@ -87,10 +84,18 @@ const MultipleChoiceDialog = ({ survey, id, handleResponse }: props) => {
     setStartTime(Date.now())
   }
 
+  const handleDialogClose = () => {
+    const response = handleSurveyResponse({
+      status: 'dismissed',
+      survey,
+    })
+    handleResponse(response)
+  }
+
   return (
     <>
       {question && (
-        <DialogWrapper id={id}>
+        <DialogWrapper id={id} onClose={handleDialogClose}>
           <DialogContent
             onInteractOutside={(e) => {
               e.preventDefault()

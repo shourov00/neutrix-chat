@@ -8,6 +8,7 @@ export interface VisitorMeta {
   choices?: VisitorChoice[]
   comment?: string
   commentPreview?: string
+  responseTime?: number
 }
 
 export interface VisitorQuestion {

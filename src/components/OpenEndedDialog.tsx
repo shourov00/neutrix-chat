@@ -12,14 +12,17 @@ import ThankYouDialog from '@/src/components/ThankYouDialog'
 import { useDialog } from '@/hooks/useDialog'
 import { Textarea } from '@/src/components/ui/textarea'
 import { Button } from '@/src/components/ui/button'
+import { VisitorResponse } from '@/src/models/responseModels'
+import { handleSurveyResponse } from '@/utils/surveys.utils'
 
 interface props {
   survey: Survey
   id: string
+  handleResponse: (response: VisitorResponse) => void
 }
 
-const OpenEndedDialog = ({ survey, id }: props) => {
-  const { close } = useDialog()
+const OpenEndedDialog = ({ survey, id, handleResponse }: props) => {
+  const { close, currentDialog } = useDialog()
   const questions = survey?.settings?.questions?.data
   const [question, setQuestion] = React.useState<Question | null>(
     questions[0] || null,
@@ -29,6 +32,18 @@ const OpenEndedDialog = ({ survey, id }: props) => {
   const [questionAnswer, setQuestionAnswer] = React.useState<
     Map<string, string>
   >(new Map())
+  const [startTime, setStartTime] = React.useState<number>(0)
+
+  useEffect(() => {
+    if (currentDialog === id) {
+      setStartTime(Date.now())
+      const response = handleSurveyResponse({
+        status: 'viewed',
+        survey,
+      })
+      handleResponse(response)
+    }
+  }, [currentDialog])
 
   useEffect(() => {
     setQuestion(questions[current - 1] || null)
@@ -41,13 +56,52 @@ const OpenEndedDialog = ({ survey, id }: props) => {
         newAnswers.set(question.id, answer)
         return newAnswers
       })
+
+      if (current < questions.length) {
+        setCurrent((prev) => prev + 1)
+      } else if (current === questions.length) {
+        close()
+        setShowThanks(true)
+      }
+
+      handleOpenEndedResponse()
     }
+  }
+
+  const handleOpenEndedResponse = () => {
+    const responseTime = Date.now() - startTime
+    const response = handleSurveyResponse({
+      status: current === questions?.length ? 'completed' : 'viewed',
+      survey,
+      question,
+      comment: questionAnswer.get(question?.id || ''),
+      responseTime,
+    })
+    handleResponse(response)
+  }
+
+  const moveNext = () => {
+    setCurrent((prev) => prev + 1)
+    setStartTime(Date.now())
+  }
+
+  const movePrevious = () => {
+    setCurrent((prev) => prev - 1)
+    setStartTime(Date.now())
+  }
+
+  const handleDialogClose = () => {
+    const response = handleSurveyResponse({
+      status: 'dismissed',
+      survey,
+    })
+    handleResponse(response)
   }
 
   return (
     <>
       {question && (
-        <DialogWrapper id={id}>
+        <DialogWrapper id={id} onClose={handleDialogClose}>
           <DialogContent
             onInteractOutside={(e) => {
               e.preventDefault()
@@ -90,7 +144,7 @@ const OpenEndedDialog = ({ survey, id }: props) => {
                   size={'sm'}
                   title={'Prev'}
                   disabled={current === 1}
-                  onClick={() => setCurrent((prev) => prev - 1)}
+                  onClick={movePrevious}
                 />
                 <div className={'tracking-wider'}>
                   {current}/{questions?.length}
@@ -99,14 +153,7 @@ const OpenEndedDialog = ({ survey, id }: props) => {
                   size={'sm'}
                   title={'Next'}
                   disabled={current === questions?.length}
-                  onClick={() => {
-                    if (current < questions.length) {
-                      setCurrent((prev) => prev + 1)
-                    } else {
-                      close()
-                      setShowThanks(true)
-                    }
-                  }}
+                  onClick={moveNext}
                 />
               </div>
             )}

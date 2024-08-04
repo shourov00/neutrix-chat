@@ -21,10 +21,10 @@ interface props {
   invite: InviteSettings
   survey: Survey
   id: string
-  handleResponse?: (response: VisitorResponse) => void
+  handleResponse: (response: VisitorResponse) => void
 }
 
-const InviteDialog = ({ invite, survey, id }: props) => {
+const InviteDialog = ({ invite, survey, id, handleResponse }: props) => {
   const { close } = useDialog()
   const [showQuestions, setShowQuestions] = React.useState(false)
 
@@ -69,11 +69,19 @@ const InviteDialog = ({ invite, survey, id }: props) => {
       )}
 
       {showQuestions && survey.type === SurveyEnumType.RATING && (
-        <RatingDialog survey={survey} id={id + 1} />
+        <RatingDialog
+          survey={survey}
+          id={id + 1}
+          handleResponse={handleResponse}
+        />
       )}
 
       {showQuestions && survey.type === SurveyEnumType.OPEN_ENDED && (
-        <OpenEndedDialog survey={survey} id={id + 2} />
+        <OpenEndedDialog
+          survey={survey}
+          id={id + 2}
+          handleResponse={handleResponse}
+        />
       )}
     </>
   )
