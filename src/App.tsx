@@ -26,6 +26,7 @@ import { useAddVisitor } from '@/hooks/useAddVisitor'
 import { useAddVisitorResponse } from '@/hooks/useAddVisitorResponse'
 import MultipleChoiceDialog from '@/src/components/MultipleChoiceDialog'
 import ChatInviteDialog from '@/src/components/ChatInviteDialog'
+import ChatWidget from '@/src/components/chat-widget/ChatWidget'
 
 interface props {
   siteId: string
@@ -58,13 +59,15 @@ export default function App({ siteId }: props) {
 
   return (
     <>
-      {dialogs}
+      {/*{dialogs}*/}
 
-      <Widget
-        handleNewUserMessage={handleNewUserMessage}
-        title="Join Neutrix Chat Room"
-        subtitle="This is cool subtitle"
-      />
+      {/*<Widget*/}
+      {/*  handleNewUserMessage={handleNewUserMessage}*/}
+      {/*  title="Join Neutrix Chat Room"*/}
+      {/*  subtitle="This is cool subtitle"*/}
+      {/*/>*/}
+
+      <ChatWidget />
     </>
   )
 }
