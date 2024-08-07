@@ -1,15 +1,15 @@
 import { useMutation } from '@tanstack/react-query'
 import { VisitorResponse } from '@/src/models/responseModels'
 import { addVisitorResponse } from '@/api'
-import { useVisitorId } from '@/hooks/useVisitorId'
+import { useVisitor } from '@/hooks/useVisitor'
 
 export const useAddVisitorResponse = (siteId: string) => {
-  const [visitorId] = useVisitorId()
+  const [visitor] = useVisitor()
   return useMutation({
     mutationFn: async (values: VisitorResponse) => {
       return await addVisitorResponse({
         siteId,
-        visitor: visitorId,
+        visitor: visitor.id,
         ...values,
       })
     },

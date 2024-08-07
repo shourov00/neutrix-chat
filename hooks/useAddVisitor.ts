@@ -1,14 +1,15 @@
 import { useMutation } from '@tanstack/react-query'
 import { addVisitor } from '@/api'
-import { generateUniqueVisitorName } from '@/utils/visitor.utils'
-import { useVisitorId } from '@/hooks/useVisitorId'
+import { useVisitor } from '@/hooks/useVisitor'
 
 export const useAddVisitor = (siteId: string, value: string) => {
-  const [, setVisitorId] = useVisitorId()
+  const [visitor, setVisitor] = useVisitor()
   return useMutation({
     mutationFn: () =>
       addVisitor({
-        ...generateUniqueVisitorName(),
+        name: visitor.name,
+        color: visitor.color,
+        fruit: visitor.fruit,
         lastSessionId: value,
         siteId,
         blocked: false,
@@ -21,7 +22,10 @@ export const useAddVisitor = (siteId: string, value: string) => {
         },
       }),
     onSuccess: (data) => {
-      setVisitorId(data?.data?.data?._id)
+      setVisitor({
+        ...visitor,
+        id: data?.data?.data?._id,
+      })
     },
     onError: (error) => {
       console.log(error)

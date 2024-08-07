@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { addResponseMessage, Widget } from 'react-chat-widget'
+import { addResponseMessage } from 'react-chat-widget'
 import './global.css'
 import 'react-chat-widget/lib/styles.css'
 import { Survey, SurveyEnumType } from '@/src/models/surveyModels'
@@ -20,13 +20,13 @@ import {
 } from '@/src/models/announcementModels'
 import { getSiteData } from '@/api'
 import AnnouncementLightboxDialog from '@/src/components/AnnouncementLightboxDialog'
-import { useVisitorSession } from '@/hooks/useVisitorSession'
 import { VisitorResponse } from '@/src/models/responseModels'
 import { useAddVisitor } from '@/hooks/useAddVisitor'
 import { useAddVisitorResponse } from '@/hooks/useAddVisitorResponse'
 import MultipleChoiceDialog from '@/src/components/MultipleChoiceDialog'
 import ChatInviteDialog from '@/src/components/ChatInviteDialog'
 import ChatWidget from '@/src/components/chat-widget/ChatWidget'
+import { useVisitor } from '@/hooks/useVisitor'
 
 interface props {
   siteId: string
@@ -35,14 +35,17 @@ interface props {
 export default function App({ siteId }: props) {
   const { data, isLoading } = useSiteData()
   const [dialogs, setDialogs] = React.useState<React.JSX.Element[]>([])
-  const { value: sessionId } = useVisitorSession()
-  const { mutate: addVisitorMutation } = useAddVisitor(siteId, sessionId)
+  const [visitor] = useVisitor()
+  const { mutate: addVisitorMutation } = useAddVisitor(
+    siteId,
+    visitor.lastSessionId,
+  )
   const { mutate: addVisitorResponseMutation } = useAddVisitorResponse(siteId)
 
   useEffect(() => {
     addResponseMessage('Welcome')
     setSiteIdAtom(siteId)
-  }, [siteId, sessionId])
+  }, [siteId, visitor.lastSessionId])
 
   const handleNewUserMessage = (newMessage: string) => {
     console.log(`New message incoming! ${newMessage}`)
