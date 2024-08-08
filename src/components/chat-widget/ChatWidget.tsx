@@ -8,17 +8,16 @@ import {
 } from '@/src/components/ui/dialog'
 import { Button } from '@/src/components/ui/button'
 import ChatIcon from '@/src/components/icons/ChatIcon'
-import { Minus, SendHorizonal } from 'lucide-react'
+import { Minus } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { DialogDescription } from '@radix-ui/react-dialog'
 import ChatInputBar from '@/src/components/chat-widget/ChatInputBar'
-import PreQualificationForm from '@/src/components/chat-widget/PreQualificationForm'
+import ChatDetailsForm from '@/src/components/chat-widget/ChatDetailsForm'
 import AwayFrom from '@/src/components/chat-widget/AwayFrom'
 import { ChatMessage } from '@/models/chatModels'
 import { useVisitor } from '@/hooks/useVisitor'
-import { getSiteIdAtom } from '@/hooks/siteIdStore'
-import { useMutation, useQuery } from '@tanstack/react-query'
-import { addVisitorChat, getChatMessages } from '@/api'
+import { useQuery } from '@tanstack/react-query'
+import { getChatMessages } from '@/api'
 import SenderMessage from '@/src/components/chat-widget/SenderMessage'
 import { CHAT_MESSAGES } from '@/api/types'
 import { ScrollArea } from '@/src/components/ui/scroll-area'
@@ -34,17 +33,17 @@ const ChatWidget = () => {
   const [open, setOpen] = useState<boolean>(false)
   const [isAccent, setIsAccent] = useState<boolean>(true)
   const [isRequirePreQualification, setIsRequirePreQualification] =
-    useState<boolean>(false)
-  const [isAwayFrom, setIsAwayFrom] = useState<boolean>(false)
+    useState<boolean>(!visitor.chatId)
+  const [isAwayFrom, setIsAwayFrom] = useState<boolean>(true)
   const [messages, setMessages] = useState<ChatMessage[]>([])
-  const [chatHeight, setChatHeight] = useState<number>(550)
+  const [chatHeight, setChatHeight] = useState<number>(520)
   const chatContainerRef = useRef<HTMLDivElement>(null)
 
   const { data: previousChats, isLoading } = useChatMessages(visitor.chatId, 1)
 
   useEffect(() => {
     if (previousChats && !isLoading) {
-      setMessages(previousChats.data)
+      setMessages(previousChats?.data || [])
     }
   }, [previousChats])
 
@@ -58,30 +57,9 @@ const ChatWidget = () => {
     }
   }, [open, messages])
 
-  const { mutate: mutateNewChatRoom } = useMutation({
-    mutationFn: () =>
-      addVisitorChat({
-        siteId: getSiteIdAtom(),
-        visitor: visitor.id,
-        status: 'active',
-      }),
-    onSuccess: (data) => {
-      setVisitor({
-        ...visitor,
-        chatId: data?.data?.data?._id,
-      })
-    },
-    onError: (error) => {
-      console.log(error)
-    },
-  })
-
   const onSocketOpen = useCallback(() => {
     setIsConnected(true)
-    if (!visitor.chatId) {
-      mutateNewChatRoom()
-    }
-  }, [visitor.chatId, mutateNewChatRoom])
+  }, [])
 
   const onSocketClose = useCallback(() => {
     setIsConnected(false)
@@ -218,7 +196,7 @@ const ChatWidget = () => {
             {!messages.length && (
               <>
                 {isAwayFrom ? (
-                  <AwayFrom />
+                  <AwayFrom onSendMessage={onSendMessage} />
                 ) : (
                   <>
                     <div
@@ -233,17 +211,10 @@ const ChatWidget = () => {
                     </div>
 
                     {isRequirePreQualification && (
-                      <>
-                        <PreQualificationForm />
-
-                        <Button
-                          type="button"
-                          className={'font-bold py-6 w-fit ms-auto'}
-                        >
-                          <SendHorizonal className={'w-5 h-5 mr-2'} />
-                          Start Chatting
-                        </Button>
-                      </>
+                      <ChatDetailsForm
+                        onSendMessage={onSendMessage}
+                        type={'pre-qualification'}
+                      />
                     )}
                   </>
                 )}
@@ -252,7 +223,7 @@ const ChatWidget = () => {
           </div>
         </ScrollArea>
 
-        {!isRequirePreQualification && (
+        {(!isRequirePreQualification || visitor.chatId) && (
           <ChatInputBar
             onSendMessage={onSendMessage}
             setChatHeight={setChatHeight}

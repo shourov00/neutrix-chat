@@ -1,4 +1,4 @@
-import { RANDOM_COLORS, RANDOM_FRUITS } from '../constants'
+import { RANDOM_COLORS, RANDOM_FRUITS } from '@/constants'
 
 function getRandomElement(arr: string[]) {
   return arr[Math.floor(Math.random() * arr.length)]

@@ -1,10 +1,14 @@
 import { cn } from '@/lib/utils'
 import React, { useState } from 'react'
-import { Button } from '@/src/components/ui/button'
-import { Clock5, SendHorizonal } from 'lucide-react'
-import AwayFromForm from '@/src/components/chat-widget/AwayFromForm'
+import { Clock5 } from 'lucide-react'
+import { ChatMessage } from '@/models/chatModels'
+import ChatDetailsForm from '@/src/components/chat-widget/ChatDetailsForm'
 
-const AwayFrom = () => {
+interface Props {
+  onSendMessage: (message: ChatMessage) => void
+}
+
+const AwayFrom = ({ onSendMessage }: Props) => {
   const [displayOfficeHours, setDisplayOfficeHours] = useState(true)
 
   return (
@@ -25,12 +29,7 @@ const AwayFrom = () => {
         send us a message. We usually reply within a couple hours
       </div>
 
-      <AwayFromForm />
-
-      <Button type="button" className={'font-bold py-6 w-fit ms-auto'}>
-        <SendHorizonal className={'w-5 h-5 mr-2'} />
-        Send Message
-      </Button>
+      <ChatDetailsForm type={'away'} onSendMessage={onSendMessage} />
     </>
   )
 }
