@@ -5,13 +5,10 @@ import { format } from 'date-fns'
 import { UserRound } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-const SenderMessage = ({ message }: { message: ChatMessage }) => {
+const ReceiverMessage = ({ message }: { message: ChatMessage }) => {
   return (
-    <div className={'flex items-end flex-col gap-2 mb-2'}>
+    <div className={'flex items-start flex-col gap-2 mb-2'}>
       <div className={'flex gap-2 items-center'}>
-        <div className={'font-bold text-sm'}>
-          {message?.name || 'Anonymous'}
-        </div>
         <div
           className={
             'rounded-full w-6 h-6 bg-primary text-white flex items-center justify-center'
@@ -19,10 +16,13 @@ const SenderMessage = ({ message }: { message: ChatMessage }) => {
         >
           <UserRound className={'w-4 h-4'} />
         </div>
+        <div className={'font-bold text-sm'}>
+          {message?.name || 'Anonymous'}
+        </div>
       </div>
       <div
         className={cn(
-          'p-2 bg-[#ebf5ff] text-primary rounded-lg text-sm font-semibold break-all text-pretty flex flex-col',
+          'p-2 bg-[#f3f4f6] text-primary rounded-lg text-sm font-semibold break-all text-pretty flex flex-col',
           message.content && message.content.length <= 40 && 'flex-row gap-2',
         )}
       >
@@ -35,4 +35,4 @@ const SenderMessage = ({ message }: { message: ChatMessage }) => {
   )
 }
 
-export default SenderMessage
+export default ReceiverMessage

@@ -3,7 +3,7 @@ import {
   DeliverySettings,
   Draft,
   CommunicationStatusEnumType,
-} from '@/src/models/surveyModels'
+} from './surveyModels'
 
 export enum AnnouncementStepEnum {
   CONTENT = 'content',

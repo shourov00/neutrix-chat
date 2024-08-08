@@ -4,7 +4,7 @@ import {
   DialogTitle,
 } from '@/src/components/ui/dialog'
 import React from 'react'
-import { ThanksSettings } from '@/src/models/surveyModels'
+import { ThanksSettings } from '@/models/surveyModels'
 import DialogWrapper from '@/src/components/DialogWrapper'
 import { Button } from '@/src/components/ui/button'
 import { Input } from '@/src/components/ui/input'

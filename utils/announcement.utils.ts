@@ -1,7 +1,4 @@
-import {
-  Announcement,
-  AnnouncementEnumType,
-} from '@/src/models/announcementModels'
+import { Announcement, AnnouncementEnumType } from '@/models/announcementModels'
 import { checkIfDurationExceeded } from './date.utils'
 import { checkIfVisibleInCurrentPath } from './audience.utils'
 

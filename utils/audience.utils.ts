@@ -3,7 +3,7 @@ import {
   CommunicationRuleEnumType,
   CommunicationRuleURLEnumType,
   CommunicationRuleURLMatchEnumType,
-} from '@/src/models/surveyModels'
+} from '@/models/surveyModels'
 
 export const checkIfVisibleInCurrentPath = (
   audience: AudienceSettings,

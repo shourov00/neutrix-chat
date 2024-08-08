@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query'
-import { VisitorResponse } from '@/src/models/responseModels'
+import { VisitorResponse } from '@/models/responseModels'
 import { addVisitorResponse } from '@/api'
 import { useVisitor } from '@/hooks/useVisitor'
 

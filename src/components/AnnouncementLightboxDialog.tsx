@@ -9,7 +9,7 @@ import React from 'react'
 import DialogWrapper from '@/src/components/DialogWrapper'
 import { useDialog } from '@/hooks/useDialog'
 import { cn } from '@/lib/utils'
-import { Announcement } from '@/src/models/announcementModels'
+import { Announcement } from '@/models/announcementModels'
 
 interface Props {
   id: string

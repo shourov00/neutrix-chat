@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { ImageIcon, SendHorizonal, Smile } from 'lucide-react'
 import EmojiPicker from 'emoji-picker-react'
 import { Button } from '@/src/components/ui/button'
@@ -6,18 +6,24 @@ import { Textarea } from '@/src/components/ui/textarea'
 import useAutosizeTextArea from '@/src/components/useAutosizeTextArea'
 import { useVisitor } from '@/hooks/useVisitor'
 import { getSiteIdAtom } from '@/hooks/siteIdStore'
-import { ChatMessage } from '@/src/models/chatModels'
+import { ChatMessage } from '@/models/chatModels'
+import { cn } from '@/lib/utils'
 
 interface Props {
   onSendMessage: (message: ChatMessage) => void
+  setChatHeight: (value: number) => void
 }
 
-const ChatInputBar = ({ onSendMessage }: Props) => {
+const ChatInputBar = ({ onSendMessage, setChatHeight }: Props) => {
   const [visitor] = useVisitor()
   const [value, setValue] = useState('')
   const [isEmoji, setIsEmoji] = React.useState<boolean>(false)
   const textAreaRef = useRef<HTMLTextAreaElement>(null)
   useAutosizeTextArea(textAreaRef.current, value)
+
+  useEffect(() => {
+    setChatHeight(isEmoji ? 235 : 550)
+  }, [isEmoji])
 
   const handleChange = (evt: React.ChangeEvent<HTMLTextAreaElement>) => {
     const val = evt.target?.value
@@ -26,7 +32,6 @@ const ChatInputBar = ({ onSendMessage }: Props) => {
 
   const handleEmojiClick = (event: { emoji: string }) => {
     setValue((prevValue) => prevValue + event.emoji)
-    setIsEmoji(false)
   }
 
   const handleSendMessage = () => {
@@ -38,6 +43,8 @@ const ChatInputBar = ({ onSendMessage }: Props) => {
         content: value,
         messageType: 'text',
         senderId: visitor.id,
+        name: visitor.name,
+        createdAt: new Date(),
       })
       setValue('')
     }
@@ -86,10 +93,12 @@ const ChatInputBar = ({ onSendMessage }: Props) => {
         >
           <SendHorizonal className={'w-5 h-5'} />
         </Button>
-        <Smile
-          className={'w-8 h-8 cursor-pointer hover:opacity-75'}
-          onClick={() => setIsEmoji(!isEmoji)}
-        />
+        <div className={cn('p-1 rounded-lg', isEmoji && 'bg-secondary')}>
+          <Smile
+            className={'w-6 h-6 cursor-pointer hover:opacity-75'}
+            onClick={() => setIsEmoji(!isEmoji)}
+          />
+        </div>
         <ImageIcon className={'w-8 h-8 cursor-pointer hover:opacity-75'} />
       </div>
     </div>

@@ -5,13 +5,13 @@ import {
   DialogTitle,
 } from '@/src/components/ui/dialog'
 import React, { useEffect } from 'react'
-import { Question, QuestionChoices, Survey } from '@/src/models/surveyModels'
+import { Question, QuestionChoices, Survey } from '@/models/surveyModels'
 import ActionButton from '@/src/components/ui/action-button'
 import DialogWrapper from '@/src/components/DialogWrapper'
 import { useDialog } from '@/hooks/useDialog'
 import { Button } from '@/src/components/ui/button'
 import ThankYouDialog from '@/src/components/ThankYouDialog'
-import { VisitorChoice, VisitorResponse } from '@/src/models/responseModels'
+import { VisitorChoice, VisitorResponse } from '@/models/responseModels'
 import { handleSurveyResponse } from '@/utils/surveys.utils'
 
 interface props {

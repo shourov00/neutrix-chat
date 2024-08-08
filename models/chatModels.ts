@@ -8,6 +8,7 @@ export interface ChatMessage {
   _id?: string
   siteId?: string
   chatId?: string
+  name?: string
   messageType?: 'text' | 'image' | 'video' | 'file' | 'audio'
   status?: 'sent' | 'delivered' | 'read'
   content?: string
@@ -19,4 +20,10 @@ export interface ChatMessage {
 interface Attachment {
   type?: 'image' | 'video' | 'file' | 'audio' | null
   url?: string | null
+}
+
+export interface QueryFilter {
+  page?: string
+  limit?: string
+  searchKeyword?: string
 }

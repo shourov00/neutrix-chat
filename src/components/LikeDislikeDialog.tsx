@@ -5,13 +5,13 @@ import {
   DialogTitle,
 } from '@/src/components/ui/dialog'
 import React, { useEffect } from 'react'
-import { Survey } from '@/src/models/surveyModels'
+import { Survey } from '@/models/surveyModels'
 import DialogWrapper from '@/src/components/DialogWrapper'
 import ThankYouDialog from '@/src/components/ThankYouDialog'
 import { useDialog } from '@/hooks/useDialog'
 import { Button } from '@/src/components/ui/button'
 import { ThumbsDown, ThumbsUp } from 'lucide-react'
-import { VisitorChoice, VisitorResponse } from '@/src/models/responseModels'
+import { VisitorChoice, VisitorResponse } from '@/models/responseModels'
 import { handleSurveyResponse } from '@/utils/surveys.utils'
 
 interface props {

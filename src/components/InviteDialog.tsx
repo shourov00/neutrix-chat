@@ -5,17 +5,13 @@ import {
   DialogTitle,
 } from '@/src/components/ui/dialog'
 import React from 'react'
-import {
-  InviteSettings,
-  Survey,
-  SurveyEnumType,
-} from '@/src/models/surveyModels'
+import { InviteSettings, Survey, SurveyEnumType } from '@/models/surveyModels'
 import ActionButton from '@/src/components/ui/action-button'
 import RatingDialog from '@/src/components/RatingDialog'
 import DialogWrapper from '@/src/components/DialogWrapper'
 import { useDialog } from '@/hooks/useDialog'
 import OpenEndedDialog from '@/src/components/OpenEndedDialog'
-import { VisitorResponse } from '@/src/models/responseModels'
+import { VisitorResponse } from '@/models/responseModels'
 
 interface props {
   invite: InviteSettings

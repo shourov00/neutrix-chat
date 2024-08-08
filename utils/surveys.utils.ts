@@ -1,7 +1,7 @@
-import { Question, Survey, SurveyEnumType } from '@/src/models/surveyModels'
+import { Question, Survey, SurveyEnumType } from '@/models/surveyModels'
 import { checkIfDurationExceeded } from './date.utils'
 import { checkIfVisibleInCurrentPath } from './audience.utils'
-import { VisitorChoice, VisitorResponse } from '@/src/models/responseModels'
+import { VisitorChoice, VisitorResponse } from '@/models/responseModels'
 
 export const filterSurveys = (type: SurveyEnumType, surveys: Survey[]) => {
   return (
