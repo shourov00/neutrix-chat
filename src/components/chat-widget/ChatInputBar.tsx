@@ -74,7 +74,7 @@ const ChatInputBar = ({ onSendMessage, setChatHeight }: Props) => {
         onEmojiClick={handleEmojiClick}
       />
 
-      <div className={'flex gap-3 items-end'}>
+      <div className={'flex gap-2 items-end'}>
         <Textarea
           className={
             'min-h-fit h-auto bg-transparent border-none font-semibold focus-visible:ring-0 focus-visible:ring-offset-0'
@@ -93,13 +93,17 @@ const ChatInputBar = ({ onSendMessage, setChatHeight }: Props) => {
         >
           <SendHorizonal className={'w-5 h-5'} />
         </Button>
-        <div className={cn('p-1 rounded-lg', isEmoji && 'bg-secondary')}>
+        <div
+          className={cn('p-1 rounded-lg mx-auto', isEmoji && 'bg-secondary')}
+        >
           <Smile
             className={'w-6 h-6 cursor-pointer hover:opacity-75'}
             onClick={() => setIsEmoji(!isEmoji)}
           />
         </div>
-        <ImageIcon className={'w-8 h-8 cursor-pointer hover:opacity-75'} />
+        <div className={'p-1 relative'}>
+          <ImageIcon className={'w-6 h-6 cursor-pointer hover:opacity-75'} />
+        </div>
       </div>
     </div>
   )
