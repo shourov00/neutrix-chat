@@ -23,18 +23,17 @@ import { CHAT_MESSAGES } from '@/api/types'
 import { ScrollArea } from '@/src/components/ui/scroll-area'
 import Loading from '@/src/components/ui/loading'
 import ReceiverMessage from '@/src/components/chat-widget/ReceiverMessage'
+import useWebSocket from '@/hooks/useWebSocket'
 
 const URL = process.env.CHAT_WEBSOCKET_API_ENDPOINT
 
 const ChatWidget = () => {
-  const socket = useRef<WebSocket | null>(null)
   const [visitor, setVisitor] = useVisitor()
-  const [isConnected, setIsConnected] = useState(false)
   const [open, setOpen] = useState<boolean>(false)
   const [isAccent, setIsAccent] = useState<boolean>(true)
   const [isRequirePreQualification, setIsRequirePreQualification] =
     useState<boolean>(!visitor.chatId)
-  const [isAwayFrom, setIsAwayFrom] = useState<boolean>(true)
+  const [isAwayFrom, setIsAwayFrom] = useState<boolean>(false)
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [chatHeight, setChatHeight] = useState<number>(520)
   const chatContainerRef = useRef<HTMLDivElement>(null)
@@ -47,6 +46,29 @@ const ChatWidget = () => {
     }
   }, [previousChats])
 
+  const handleNewMessage = useCallback((data: any) => {
+    if (data?.chatId === visitor.chatId) {
+      setMessages((prev) => [...prev, data])
+    }
+  }, [])
+
+  const { connect, sendMessage } = useWebSocket({
+    onMessage: handleNewMessage,
+    onOpen: () => console.log('WebSocket connected'),
+    onClose: () => console.log('WebSocket disconnected'),
+  })
+
+  const onSendMessage = useCallback(
+    (chatMessage: ChatMessage) => {
+      sendMessage({
+        action: 'setName',
+        ...chatMessage,
+      })
+      setMessages((prev) => [...prev, chatMessage])
+    },
+    [sendMessage],
+  )
+
   useEffect(() => {
     if (open) {
       const timer = setTimeout(() => {
@@ -56,53 +78,6 @@ const ChatWidget = () => {
       return () => clearTimeout(timer)
     }
   }, [open, messages])
-
-  const onSocketOpen = useCallback(() => {
-    setIsConnected(true)
-  }, [])
-
-  const onSocketClose = useCallback(() => {
-    setIsConnected(false)
-    // socket.current?.send(JSON.stringify({ action: 'disconnect' }));
-  }, [])
-
-  const onSocketMessage = useCallback((dataStr: string) => {
-    const data = JSON.parse(dataStr)
-    setMessages((prev) => [...prev, data])
-  }, [])
-
-  const onConnect = useCallback(() => {
-    if (socket.current?.readyState !== WebSocket.OPEN && URL) {
-      socket.current = new WebSocket(URL)
-      socket.current.addEventListener('open', onSocketOpen)
-      socket.current.addEventListener('close', onSocketClose)
-      socket.current.addEventListener('message', (event) => {
-        onSocketMessage(event.data)
-      })
-    }
-  }, [])
-
-  useEffect(() => {
-    return () => {
-      socket.current?.close()
-    }
-  }, [])
-
-  const onSendMessage = useCallback((chatMessage: ChatMessage) => {
-    socket.current?.send(
-      JSON.stringify({
-        action: 'setName',
-        ...chatMessage,
-      }),
-    )
-    setMessages((prev) => [...prev, chatMessage])
-  }, [])
-
-  const onDisconnect = useCallback(() => {
-    if (isConnected) {
-      socket.current?.close()
-    }
-  }, [isConnected])
 
   const scrollToBottom = () => {
     if (chatContainerRef.current) {
@@ -117,7 +92,7 @@ const ChatWidget = () => {
           className={
             'p-[12px] bottom-0 right-0 fixed mb-4 mr-4 bg-white transition-all hover:bg-white h-14 w-14 rounded-2xl drop-shadow-lg hover:drop-shadow-xl'
           }
-          onClick={onConnect}
+          onClick={connect}
         >
           <ChatIcon />
         </Button>
