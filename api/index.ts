@@ -11,6 +11,10 @@ export const addVisitor = async (data: Visitor) => {
   return await api.post('/visitors', qs.stringify(data))
 }
 
+export const updateVisitor = async (id: string, data: Visitor) => {
+  return await api.patch(`/visitors/${id}`, qs.stringify(data))
+}
+
 export const addVisitorResponse = async (data: VisitorResponse) => {
   return await api.post('/visitors-response', qs.stringify(data))
 }

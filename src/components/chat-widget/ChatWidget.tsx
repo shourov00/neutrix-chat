@@ -25,10 +25,8 @@ import Loading from '@/src/components/ui/loading'
 import ReceiverMessage from '@/src/components/chat-widget/ReceiverMessage'
 import useWebSocket from '@/hooks/useWebSocket'
 
-const URL = process.env.CHAT_WEBSOCKET_API_ENDPOINT
-
 const ChatWidget = () => {
-  const [visitor, setVisitor] = useVisitor()
+  const [visitor] = useVisitor()
   const [open, setOpen] = useState<boolean>(false)
   const [isAccent, setIsAccent] = useState<boolean>(true)
   const [isRequirePreQualification, setIsRequirePreQualification] =
@@ -38,7 +36,11 @@ const ChatWidget = () => {
   const [chatHeight, setChatHeight] = useState<number>(520)
   const chatContainerRef = useRef<HTMLDivElement>(null)
 
-  const { data: previousChats, isLoading } = useChatMessages(visitor.chatId, 1)
+  const { data: previousChats, isLoading } = useChatMessages(
+    visitor.chatId,
+    1,
+    visitor.id,
+  )
 
   useEffect(() => {
     if (previousChats && !isLoading) {
@@ -46,11 +48,9 @@ const ChatWidget = () => {
     }
   }, [previousChats])
 
-  const handleNewMessage = useCallback((data: any) => {
-    if (data?.chatId === visitor.chatId) {
-      setMessages((prev) => [...prev, data])
-    }
-  }, [])
+  const handleNewMessage = (data: any) => {
+    setMessages((prev) => [...prev, data])
+  }
 
   const { connect, sendMessage } = useWebSocket({
     onMessage: handleNewMessage,
@@ -62,6 +62,7 @@ const ChatWidget = () => {
     (chatMessage: ChatMessage) => {
       sendMessage({
         action: 'setName',
+        role: 'visitor',
         ...chatMessage,
       })
       setMessages((prev) => [...prev, chatMessage])
@@ -209,11 +210,12 @@ const ChatWidget = () => {
   )
 }
 
-const useChatMessages = (chatId: string, page: number) =>
+const useChatMessages = (chatId: string, page: number, visitorId: string) =>
   useQuery({
     queryKey: [CHAT_MESSAGES],
     queryFn: () =>
       getChatMessages(chatId, {
+        visitorId,
         page,
       }).then((res) => res.data.data),
   })

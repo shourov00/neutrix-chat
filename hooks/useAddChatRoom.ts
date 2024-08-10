@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query'
-import { addVisitorChat } from '@/api'
+import { addVisitorChat, updateVisitor } from '@/api'
 import { useVisitor } from '@/hooks/useVisitor'
 import { getSiteIdAtom } from './siteIdStore'
 import { ChatMessage } from '@/models/chatModels'
@@ -10,6 +10,16 @@ interface Props {
 
 export const useAddChatRoom = ({ onSendMessage }: Props) => {
   const [visitor, setVisitor] = useVisitor()
+
+  const { mutate: updateVisitorInfo } = useMutation({
+    mutationFn: async (values: any) => {
+      return updateVisitor(visitor.id, values)
+    },
+    onError: (error) => {
+      console.log(error)
+    },
+  })
+
   return useMutation({
     mutationFn: async (values: any) => {
       const response = await addVisitorChat({
@@ -22,6 +32,10 @@ export const useAddChatRoom = ({ onSendMessage }: Props) => {
         ...visitor,
         ...values,
         chatId,
+      })
+      updateVisitorInfo({
+        name: values.name,
+        email: values.email,
       })
       onSendMessage({
         siteId: getSiteIdAtom(),
