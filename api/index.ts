@@ -23,6 +23,10 @@ export const addVisitorChat = async (data: VisitorChat) => {
   return await api.post('/visitors-chat', qs.stringify(data))
 }
 
+export const uploadFile = async (data: FormData) => {
+  return await api.post('/upload', data)
+}
+
 export const getChatMessages = async (
   id: string,
   filterDto?: Record<string, any>,

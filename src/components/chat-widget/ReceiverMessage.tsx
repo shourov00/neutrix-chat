@@ -23,10 +23,31 @@ const ReceiverMessage = ({ message }: { message: ChatMessage }) => {
       <div
         className={cn(
           'p-2 bg-[#f3f4f6] text-primary rounded-lg text-sm font-semibold break-all text-pretty flex flex-col',
-          message.content && message.content.length <= 40 && 'flex-row gap-2',
+          !message.attachments?.length &&
+            message.content &&
+            message.content.length <= 40 &&
+            'flex-row gap-2',
         )}
       >
         <span className="break-all">{message.content}</span>
+
+        {message.attachments && (
+          <div className={'flex flex-wrap gap-2 my-1 ms-auto'}>
+            {message.attachments.map((attachment, index) => (
+              <div className={'relative'}>
+                {attachment.url && (
+                  <img
+                    key={index}
+                    alt={attachment.url}
+                    src={attachment.url}
+                    className={'w-20 h-20 object-cover rounded-lg border'}
+                  />
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+
         <div className="font-light text-[11px] text-right mt-auto">
           {format(message?.createdAt || new Date(), 'hh:mm a')}
         </div>

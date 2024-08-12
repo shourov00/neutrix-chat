@@ -14,16 +14,17 @@ import { DialogDescription } from '@radix-ui/react-dialog'
 import ChatInputBar from '@/src/components/chat-widget/ChatInputBar'
 import ChatDetailsForm from '@/src/components/chat-widget/ChatDetailsForm'
 import AwayFrom from '@/src/components/chat-widget/AwayFrom'
-import { ChatMessage } from '@/models/chatModels'
+import { Attachment, ChatMessage } from '@/models/chatModels'
 import { useVisitor } from '@/hooks/useVisitor'
-import { useQuery } from '@tanstack/react-query'
-import { getChatMessages } from '@/api'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { getChatMessages, uploadFile } from '@/api'
 import SenderMessage from '@/src/components/chat-widget/SenderMessage'
 import { CHAT_MESSAGES } from '@/api/types'
 import { ScrollArea } from '@/src/components/ui/scroll-area'
 import Loading from '@/src/components/ui/loading'
 import ReceiverMessage from '@/src/components/chat-widget/ReceiverMessage'
 import useWebSocket from '@/hooks/useWebSocket'
+import { toast } from 'sonner'
 
 const ChatWidget = () => {
   const [visitor] = useVisitor()
@@ -41,6 +42,53 @@ const ChatWidget = () => {
     1,
     visitor.id,
   )
+
+  const { mutate: fileUploadMutate } = useMutation({
+    mutationFn: async (values: ChatMessage) => {
+      const formData = new FormData()
+      if (values?.attachments) {
+        for (const attachment of values.attachments) {
+          if (attachment.file) {
+            formData.append('images', attachment.file)
+          }
+        }
+      }
+      return await uploadFile(formData)
+    },
+    onSuccess: (data, values) => {
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.createdAt === values.createdAt
+            ? { ...msg, isLoading: false }
+            : msg,
+        ),
+      )
+
+      const message = values
+      message.attachments = data.data.data.map(
+        (image: string): Attachment => ({
+          type: 'image',
+          url: image,
+        }),
+      )
+
+      sendMessage({
+        action: 'setName',
+        role: 'visitor',
+        ...message,
+      })
+    },
+    onError: (error, values) => {
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.createdAt === values.createdAt
+            ? { ...msg, isLoading: false, isError: true }
+            : msg,
+        ),
+      )
+      toast.error(error?.message)
+    },
+  })
 
   useEffect(() => {
     if (previousChats && !isLoading) {
@@ -60,14 +108,18 @@ const ChatWidget = () => {
 
   const onSendMessage = useCallback(
     (chatMessage: ChatMessage) => {
-      sendMessage({
-        action: 'setName',
-        role: 'visitor',
-        ...chatMessage,
-      })
+      if (chatMessage?.attachments) {
+        fileUploadMutate(chatMessage)
+      } else {
+        sendMessage({
+          action: 'setName',
+          role: 'visitor',
+          ...chatMessage,
+        })
+      }
       setMessages((prev) => [...prev, chatMessage])
     },
-    [sendMessage],
+    [sendMessage, fileUploadMutate],
   )
 
   useEffect(() => {
@@ -87,7 +139,7 @@ const ChatWidget = () => {
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={setOpen} modal={false}>
       <DialogTrigger asChild>
         <Button
           className={

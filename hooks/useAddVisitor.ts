@@ -5,8 +5,8 @@ import { useVisitor } from '@/hooks/useVisitor'
 export const useAddVisitor = (siteId: string, value: string) => {
   const [visitor, setVisitor] = useVisitor()
   return useMutation({
-    mutationFn: () =>
-      addVisitor({
+    mutationFn: async () =>
+      await addVisitor({
         name: visitor.name,
         color: visitor.color,
         fruit: visitor.fruit,

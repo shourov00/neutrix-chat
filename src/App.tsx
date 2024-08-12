@@ -24,6 +24,7 @@ import MultipleChoiceDialog from '@/src/components/MultipleChoiceDialog'
 import ChatInviteDialog from '@/src/components/ChatInviteDialog'
 import ChatWidget from '@/src/components/chat-widget/ChatWidget'
 import { useVisitor } from '@/hooks/useVisitor'
+import { Toaster } from '@/src/components/ui/sonner'
 
 interface props {
   siteId: string
@@ -44,10 +45,6 @@ export default function App({ siteId }: props) {
     setSiteIdAtom(siteId)
   }, [siteId, visitor.lastSessionId])
 
-  const handleNewUserMessage = (newMessage: string) => {
-    console.log(`New message incoming! ${newMessage}`)
-  }
-
   useEffect(() => {
     if (!isLoading && data) {
       addVisitorMutation()
@@ -61,13 +58,8 @@ export default function App({ siteId }: props) {
     <>
       {/*{dialogs}*/}
 
-      {/*<Widget*/}
-      {/*  handleNewUserMessage={handleNewUserMessage}*/}
-      {/*  title="Join Neutrix Chat Room"*/}
-      {/*  subtitle="This is cool subtitle"*/}
-      {/*/>*/}
-
       <ChatWidget />
+      <Toaster position={'top-center'} />
     </>
   )
 }

@@ -13,7 +13,7 @@ export const useAddChatRoom = ({ onSendMessage }: Props) => {
 
   const { mutate: updateVisitorInfo } = useMutation({
     mutationFn: async (values: any) => {
-      return updateVisitor(visitor.id, values)
+      return await updateVisitor(visitor.id, values)
     },
     onError: (error) => {
       console.log(error)

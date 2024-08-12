@@ -1,3 +1,4 @@
+export const MAX_FILE_UPLOAD_SIZE = 2 * 1024 * 1024 // 2MB in bytes
 export const RANDOM_COLORS = [
   'Red',
   'Blue',

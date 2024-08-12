@@ -15,11 +15,14 @@ export interface ChatMessage {
   senderId?: string
   attachments?: Attachment[]
   createdAt?: Date
+  isLoading?: boolean
+  isError?: boolean
 }
 
-interface Attachment {
+export interface Attachment {
   type?: 'image' | 'video' | 'file' | 'audio' | null
   url?: string | null
+  file?: File
 }
 
 export interface QueryFilter {

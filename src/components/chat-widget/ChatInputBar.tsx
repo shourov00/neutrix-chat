@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { ImageIcon, SendHorizonal, Smile } from 'lucide-react'
+import { ImageIcon, SendHorizonal, Smile, XIcon } from 'lucide-react'
 import EmojiPicker from 'emoji-picker-react'
 import { Button } from '@/src/components/ui/button'
 import { Textarea } from '@/src/components/ui/textarea'
@@ -8,6 +8,8 @@ import { useVisitor } from '@/hooks/useVisitor'
 import { getSiteIdAtom } from '@/hooks/siteIdStore'
 import { ChatMessage } from '@/models/chatModels'
 import { cn } from '@/lib/utils'
+import { MAX_FILE_UPLOAD_SIZE } from '@/constants'
+import { toast } from 'sonner'
 
 interface Props {
   onSendMessage: (message: ChatMessage) => void
@@ -15,10 +17,12 @@ interface Props {
 }
 
 const ChatInputBar = ({ onSendMessage, setChatHeight }: Props) => {
+  const [files, setFiles] = useState<File[]>([])
   const [visitor] = useVisitor()
   const [value, setValue] = useState('')
   const [isEmoji, setIsEmoji] = React.useState<boolean>(false)
   const textAreaRef = useRef<HTMLTextAreaElement>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
   useAutosizeTextArea(textAreaRef.current, value)
 
   useEffect(() => {
@@ -35,7 +39,7 @@ const ChatInputBar = ({ onSendMessage, setChatHeight }: Props) => {
   }
 
   const handleSendMessage = () => {
-    if (value.trim()) {
+    if (value.trim() || files.length) {
       onSendMessage({
         siteId: getSiteIdAtom(),
         status: 'sent',
@@ -45,8 +49,14 @@ const ChatInputBar = ({ onSendMessage, setChatHeight }: Props) => {
         senderId: visitor.id,
         name: visitor.name,
         createdAt: new Date(),
+        isLoading: !!files.length,
+        attachments: files.map((file) => ({
+          file,
+          type: 'image',
+        })),
       })
       setValue('')
+      setFiles([])
     }
   }
 
@@ -54,6 +64,46 @@ const ChatInputBar = ({ onSendMessage, setChatHeight }: Props) => {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault()
       handleSendMessage()
+    }
+  }
+
+  const fileTypeCheck = (file: File) => {
+    const exists = files.find((f) => f.name === file.name)
+    if (exists) {
+      toast.error('File already exists.')
+      return
+    }
+
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp']
+    if (!allowedTypes.includes(file.type)) {
+      toast.error('Invalid file type. Please import a valid file.')
+      return
+    }
+    if (file.size > MAX_FILE_UPLOAD_SIZE) {
+      toast.error(`File ${file.name} exceeds the maximum size`)
+      return
+    }
+    setFiles((prev) => [...prev, file])
+  }
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault()
+    const fileList = e.target.files
+    if (fileList) {
+      if (files.length + fileList.length > 5) {
+        toast.error('You can only upload a maximum of 5 images.')
+        if (fileInputRef.current) {
+          fileInputRef.current.value = ''
+        }
+        return
+      }
+
+      for (const _file of fileList) {
+        fileTypeCheck(_file)
+      }
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ''
+      }
     }
   }
 
@@ -73,6 +123,28 @@ const ChatInputBar = ({ onSendMessage, setChatHeight }: Props) => {
         }}
         onEmojiClick={handleEmojiClick}
       />
+
+      {files.length > 0 && (
+        <div className={'flex flex-wrap gap-2 mb-1'}>
+          {files.map((file) => (
+            <div key={file.name} className={'relative'}>
+              <img
+                alt={file.name}
+                src={URL.createObjectURL(file)}
+                className={'w-14 h-14 object-cover rounded-lg border'}
+              />
+              <XIcon
+                onClick={() =>
+                  setFiles(files.filter((item) => item.name !== file.name))
+                }
+                className={
+                  'w-4 h-4 text-red-400 cursor-pointer absolute right-[2px] top-[2px]'
+                }
+              />
+            </div>
+          ))}
+        </div>
+      )}
 
       <div className={'flex gap-2 items-end'}>
         <Textarea
@@ -102,7 +174,19 @@ const ChatInputBar = ({ onSendMessage, setChatHeight }: Props) => {
           />
         </div>
         <div className={'p-1 relative'}>
-          <ImageIcon className={'w-6 h-6 cursor-pointer hover:opacity-75'} />
+          <label htmlFor="file-upload">
+            <ImageIcon className={'w-6 h-6 cursor-pointer hover:opacity-75'} />
+          </label>
+          <input
+            id="file-upload"
+            ref={fileInputRef}
+            accept="image/*"
+            name="files"
+            type="file"
+            multiple
+            className={'absolute top-0 left-0 w-[30px] cursor-pointer hidden'}
+            onChange={handleFileUpload}
+          />
         </div>
       </div>
     </div>
