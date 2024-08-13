@@ -212,13 +212,13 @@ const ChatWidget = ({ chatSettings, companyInfo }: Props) => {
         }}
         animationClassName={'data-[state=closed]:animate-slideInDown'}
         className={cn(
-          'sm:max-w-[400px] bottom-0 right-0 p-0 gap-0',
+          'w-fit sm:max-w-[400px] bottom-0 right-0 p-0 gap-0',
           isChatPositionLeft && 'left-0',
         )}
         style={{
           marginLeft: isChatPositionLeft
             ? chatSettings?.chat?.launcher?.padding.left
-            : 0,
+            : 20,
           marginRight: !isChatPositionLeft
             ? chatSettings?.chat?.launcher?.padding.right
             : 0,
