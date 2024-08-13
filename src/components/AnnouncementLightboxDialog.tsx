@@ -5,23 +5,79 @@ import {
   DialogTitle,
 } from '@/src/components/ui/dialog'
 import { Button } from '@/src/components/ui/button'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import DialogWrapper from '@/src/components/DialogWrapper'
 import { useDialog } from '@/hooks/useDialog'
 import { cn } from '@/lib/utils'
 import { Announcement } from '@/models/announcementModels'
+import { VisitorResponse } from '@/models/responseModels'
+import {
+  getDeviceType,
+  handleAnnouncementResponse,
+} from '@/utils/announcement.utils'
 
 interface Props {
   id: string
   announcement: Announcement
+  handleResponse: (response: VisitorResponse) => void
 }
 
-const AnnouncementLightboxDialog = ({ id, announcement }: Props) => {
-  const { close } = useDialog()
+const AnnouncementLightboxDialog = ({
+  id,
+  announcement,
+  handleResponse,
+}: Props) => {
+  const { close, currentDialog } = useDialog()
   const display = announcement?.settings?.display
+  const [startTime, setStartTime] = React.useState<number>(0)
+  const [deviceType] = useState<'desktop' | 'mobile' | 'tablet'>(
+    getDeviceType(),
+  )
+
+  useEffect(() => {
+    if (currentDialog === id) {
+      setStartTime(Date.now())
+      const response = handleAnnouncementResponse({
+        status: 'viewed',
+        announcement,
+        devices: [
+          {
+            id: deviceType,
+            name: deviceType,
+            responseTime: startTime,
+          },
+        ],
+      })
+      handleResponse(response)
+    }
+  }, [currentDialog])
+
+  const handleCompleteResponse = (
+    status: 'viewed' | 'completed' | 'dismissed',
+  ) => {
+    const responseTime = Date.now() - startTime
+    const response = handleAnnouncementResponse({
+      status,
+      announcement,
+      devices: [
+        {
+          id: deviceType,
+          name: deviceType,
+          responseTime: responseTime,
+        },
+      ],
+    })
+    handleResponse(response)
+    close()
+  }
+
   return (
     <>
-      <DialogWrapper id={id} modal>
+      <DialogWrapper
+        id={id}
+        modal
+        onClose={() => handleCompleteResponse('dismissed')}
+      >
         <DialogContent
           onInteractOutside={(e) => {
             e.preventDefault()
@@ -59,7 +115,7 @@ const AnnouncementLightboxDialog = ({ id, announcement }: Props) => {
                   display?.reversed &&
                     'bg-white text-primary hover:bg-white hover:text-primary',
                 )}
-                onClick={close}
+                onClick={() => handleCompleteResponse('dismissed')}
               >
                 {display?.actionButton?.dismissLabel}
               </Button>
@@ -71,6 +127,7 @@ const AnnouncementLightboxDialog = ({ id, announcement }: Props) => {
                     display?.reversed &&
                       'bg-white text-primary hover:bg-white hover:text-primary',
                   )}
+                  onClick={() => handleCompleteResponse('completed')}
                   asChild
                 >
                   <a href={display?.actionButton?.url || '/'} target="_blank">
@@ -85,6 +142,7 @@ const AnnouncementLightboxDialog = ({ id, announcement }: Props) => {
                     display?.reversed &&
                       'bg-white text-primary hover:bg-white hover:text-primary',
                   )}
+                  onClick={() => handleCompleteResponse('dismissed')}
                 >
                   {display?.dismissButton?.label}
                 </Button>

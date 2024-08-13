@@ -3,8 +3,8 @@ import qs from 'qs'
 import { VisitorResponse } from '@/models/responseModels'
 import { VisitorChat } from '@/models/chatModels'
 
-export const getSiteData = async () => {
-  return await api.get('/external-sites')
+export const getSiteData = async (visitorId: string) => {
+  return await api.get(`/external-sites?visitorId= ${visitorId}`)
 }
 
 export const addVisitor = async (data: Visitor) => {

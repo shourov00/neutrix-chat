@@ -8,13 +8,17 @@ import {
 } from '@/src/components/ui/dialog'
 import { Button } from '@/src/components/ui/button'
 import ChatIcon from '@/src/components/icons/ChatIcon'
-import { Minus } from 'lucide-react'
+import { MessageCircle, Minus } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { DialogDescription } from '@radix-ui/react-dialog'
 import ChatInputBar from '@/src/components/chat-widget/ChatInputBar'
 import ChatDetailsForm from '@/src/components/chat-widget/ChatDetailsForm'
 import AwayFrom from '@/src/components/chat-widget/AwayFrom'
-import { Attachment, ChatMessage } from '@/models/chatModels'
+import {
+  Attachment,
+  ChatMessage,
+  ChatSettings,
+  CompanyInfo,
+} from '@/models/chatModels'
 import { useVisitor } from '@/hooks/useVisitor'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { getChatMessages, uploadFile } from '@/api'
@@ -25,17 +29,28 @@ import Loading from '@/src/components/ui/loading'
 import ReceiverMessage from '@/src/components/chat-widget/ReceiverMessage'
 import useWebSocket from '@/hooks/useWebSocket'
 import { toast } from 'sonner'
+import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar'
+import { getNameInitials } from '@/utils/visitor.utils'
 
-const ChatWidget = () => {
+interface Props {
+  chatSettings: ChatSettings
+  companyInfo: CompanyInfo
+}
+
+const ChatWidget = ({ chatSettings, companyInfo }: Props) => {
   const [visitor] = useVisitor()
   const [open, setOpen] = useState<boolean>(false)
-  const [isAccent, setIsAccent] = useState<boolean>(true)
-  const [isRequirePreQualification, setIsRequirePreQualification] =
-    useState<boolean>(!visitor.chatId)
-  const [isAwayFrom, setIsAwayFrom] = useState<boolean>(false)
+  const [isAccent] = useState<boolean>(
+    chatSettings?.chat?.introduction?.backgroundColor === 'accentColor',
+  )
+  const [isRequirePreQualification] = useState(
+    chatSettings?.chat?.messaging?.preQualificationActive,
+  )
+  const [isAwayFrom, setIsAwayFrom] = useState<boolean>(true)
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [chatHeight, setChatHeight] = useState<number>(520)
   const chatContainerRef = useRef<HTMLDivElement>(null)
+  const isChatPositionLeft = chatSettings?.chat?.launcher?.position === 'left'
 
   const { data: previousChats, isLoading } = useChatMessages(
     visitor.chatId,
@@ -141,21 +156,77 @@ const ChatWidget = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen} modal={false}>
       <DialogTrigger asChild>
-        <Button
-          className={
-            'p-[12px] bottom-0 right-0 fixed mb-4 mr-4 bg-white transition-all hover:bg-white h-14 w-14 rounded-2xl drop-shadow-lg hover:drop-shadow-xl'
-          }
-          onClick={connect}
-        >
-          <ChatIcon />
-        </Button>
+        {chatSettings?.chat?.launcher?.launcherType === 'default' ? (
+          <Button
+            className={cn(
+              'p-[12px] bottom-0 right-0 fixed mb-4 bg-white transition-all hover:bg-white h-14 w-14 rounded-2xl drop-shadow-lg hover:drop-shadow-xl',
+              isChatPositionLeft && 'left-0',
+            )}
+            style={{
+              marginLeft: isChatPositionLeft
+                ? chatSettings?.chat?.launcher?.padding.left
+                : 0,
+              marginRight: !isChatPositionLeft
+                ? chatSettings?.chat?.launcher?.padding.right
+                : 0,
+              marginBottom:
+                chatSettings?.chat?.launcher?.launcherType === 'default'
+                  ? chatSettings?.chat?.launcher?.padding.bottom
+                  : 0,
+            }}
+            onClick={connect}
+          >
+            <ChatIcon
+              fillColor1={chatSettings?.chat?.accentColor}
+              fillColor2={chatSettings?.chat?.accentColor}
+            />
+          </Button>
+        ) : (
+          <Button
+            className={cn(
+              'p-3 rounded-md font-bold bottom-0 right-0 fixed mb-0 mr-4 bg-white transition-all hover:bg-white text-primary drop-shadow-lg hover:drop-shadow-xl text-xs',
+              isChatPositionLeft && 'left-0',
+            )}
+            style={{
+              marginLeft: isChatPositionLeft
+                ? chatSettings?.chat?.launcher?.padding.left
+                : 0,
+              marginRight: !isChatPositionLeft
+                ? chatSettings?.chat?.launcher?.padding.right
+                : 0,
+            }}
+            onClick={connect}
+          >
+            <MessageCircle
+              className={'w-4 h-4 me-2'}
+              color={chatSettings?.chat?.accentColor}
+              fill={chatSettings?.chat?.accentColor}
+            />
+            {chatSettings?.chat?.launcher?.miniChatLabel || 'Chat'}
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent
         onInteractOutside={(e) => {
           e.preventDefault()
         }}
         animationClassName={'data-[state=closed]:animate-slideInDown'}
-        className="sm:max-w-[400px] bottom-4 right-4 p-0 gap-0"
+        className={cn(
+          'sm:max-w-[400px] bottom-0 right-0 p-0 gap-0',
+          isChatPositionLeft && 'left-0',
+        )}
+        style={{
+          marginLeft: isChatPositionLeft
+            ? chatSettings?.chat?.launcher?.padding.left
+            : 0,
+          marginRight: !isChatPositionLeft
+            ? chatSettings?.chat?.launcher?.padding.right
+            : 0,
+          marginBottom:
+            chatSettings?.chat?.launcher?.launcherType === 'default'
+              ? chatSettings?.chat?.launcher?.padding.bottom
+              : 0,
+        }}
         isClose={false}
       >
         <DialogHeader
@@ -164,13 +235,23 @@ const ChatWidget = () => {
             isAccent && 'bg-primary',
           )}
         >
-          <img
-            src={
-              'https://storage.googleapis.com/lucky-orange-public-uploads/ce8c9e46/5MDBl4kBGmLb4OTNNTBw'
-            }
-            alt={'neutrix'}
-            className={'rounded-full object-cover w-8 h-8 shadow-xl'}
-          />
+          <Avatar>
+            <AvatarImage
+              className={'rounded-full object-cover w-8 h-8 shadow-xl'}
+              src={
+                chatSettings?.chat?.introduction?.headerImage === 'companyIcon'
+                  ? companyInfo?.companyImage
+                  : companyInfo?.image
+              }
+            />
+            <AvatarFallback
+              className={
+                'bg-[#fbf6c6] font-bold text-sm border rounded-full border-white p-2'
+              }
+            >
+              {getNameInitials(companyInfo?.fullName)}
+            </AvatarFallback>
+          </Avatar>
           <div>
             <DialogTitle
               className={cn(
@@ -178,16 +259,16 @@ const ChatWidget = () => {
                 isAccent && 'text-white',
               )}
             >
-              My Site
+              {chatSettings?.chat?.introduction?.companyTitle}
             </DialogTitle>
-            <DialogDescription
-              className={cn(
-                'text-xs text-primary font-light',
-                isAccent && 'text-secondary',
-              )}
-            >
-              Representative
-            </DialogDescription>
+            {/*<DialogDescription*/}
+            {/*  className={cn(*/}
+            {/*    'text-xs text-primary font-light',*/}
+            {/*    isAccent && 'text-secondary',*/}
+            {/*  )}*/}
+            {/*>*/}
+            {/*  Representative*/}
+            {/*</DialogDescription>*/}
           </div>
 
           {isLoading && (
@@ -221,37 +302,48 @@ const ChatWidget = () => {
               ),
             )}
 
-            {!messages.length && (
-              <>
-                {isAwayFrom ? (
-                  <AwayFrom onSendMessage={onSendMessage} />
-                ) : (
-                  <>
-                    <div
-                      className={cn(
-                        'text-sm font-semibold',
-                        !isRequirePreQualification &&
-                          'bg-secondary p-4 rounded-md my-6',
-                      )}
-                    >
-                      Hello! Enter throw us a question below and we&apos;ll find
-                      the right person to help you
-                    </div>
+            {messages?.length === 1 && (
+              <div
+                className={
+                  'text-sm font-semibold bg-secondary p-4 rounded-md text-primary/75'
+                }
+              >
+                {chatSettings?.chat?.messaging?.waiting}
+              </div>
+            )}
 
-                    {isRequirePreQualification && (
-                      <ChatDetailsForm
-                        onSendMessage={onSendMessage}
-                        type={'pre-qualification'}
-                      />
+            {isAwayFrom ? (
+              <AwayFrom
+                onSendMessage={onSendMessage}
+                chatSettings={chatSettings}
+              />
+            ) : (
+              !messages.length && (
+                <>
+                  <div
+                    className={cn(
+                      'text-sm font-semibold',
+                      !isRequirePreQualification &&
+                        'bg-secondary p-4 rounded-md my-6',
                     )}
-                  </>
-                )}
-              </>
+                  >
+                    {chatSettings?.chat?.messaging?.message}
+                  </div>
+
+                  {isRequirePreQualification && (
+                    <ChatDetailsForm
+                      onSendMessage={onSendMessage}
+                      type={'pre-qualification'}
+                      messageForm={chatSettings?.chat?.messaging}
+                    />
+                  )}
+                </>
+              )
             )}
           </div>
         </ScrollArea>
 
-        {(!isRequirePreQualification || visitor.chatId) && (
+        {!isRequirePreQualification && !isAwayFrom && (
           <ChatInputBar
             onSendMessage={onSendMessage}
             setChatHeight={setChatHeight}

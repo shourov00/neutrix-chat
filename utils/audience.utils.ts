@@ -9,6 +9,8 @@ export const checkIfVisibleInCurrentPath = (
   audience: AudienceSettings,
   routeUrl: string,
 ): boolean => {
+  if (!audience?.rules) return true
+
   const URLRule = audience.rules?.[0]?.find(
     (item) => item.type === CommunicationRuleEnumType.URL,
   )

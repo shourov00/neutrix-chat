@@ -1,8 +1,8 @@
 import {
   AudienceSettings,
+  CommunicationStatusEnumType,
   DeliverySettings,
   Draft,
-  CommunicationStatusEnumType,
 } from './surveyModels'
 
 export enum AnnouncementStepEnum {
@@ -70,4 +70,17 @@ export interface Announcement {
   status: CommunicationStatusEnumType
   draft: Draft
   settings: AnnouncementSettings
+}
+
+export interface AnnouncementDevice {
+  id: string
+  name: string
+  responseTime: number
+}
+
+export interface AnnouncementResponseProps {
+  status?: 'viewed' | 'completed' | 'dismissed'
+  announcement: Announcement
+  devices: AnnouncementDevice[]
+  responseTime?: number
 }

@@ -13,7 +13,7 @@ import {
   FormItem,
   FormMessage,
 } from '@/src/components/ui/form'
-import { ChatMessage } from '@/models/chatModels'
+import { AwayMessage, ChatMessage, Messaging } from '@/models/chatModels'
 import { useAddChatRoom } from '@/hooks/useAddChatRoom'
 
 const formSchema = z.object({
@@ -25,9 +25,16 @@ const formSchema = z.object({
 interface Props {
   onSendMessage: (message: ChatMessage) => void
   type: 'away' | 'pre-qualification'
+  messageForm?: Messaging | AwayMessage
+  setShowThanks?: (value: boolean) => void
 }
 
-const ChatDetailsForm = ({ onSendMessage, type }: Props) => {
+const ChatDetailsForm = ({
+  onSendMessage,
+  type,
+  messageForm,
+  setShowThanks,
+}: Props) => {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -40,7 +47,12 @@ const ChatDetailsForm = ({ onSendMessage, type }: Props) => {
   const { mutate: mutateNewChatRoom } = useAddChatRoom({ onSendMessage })
 
   const onSubmit = (values: any) => {
-    mutateNewChatRoom(values)
+    if (type === 'away') {
+      setShowThanks && setShowThanks(true)
+      // todo -> send the away message to account owner email
+    } else {
+      mutateNewChatRoom(values)
+    }
   }
 
   return (
@@ -59,7 +71,7 @@ const ChatDetailsForm = ({ onSendMessage, type }: Props) => {
                   className={
                     'mt-2 bg-secondary border-none shadow hover:shadow-lg transition-all placeholder:font-semibold'
                   }
-                  placeholder={'Your first name'}
+                  placeholder={messageForm?.preQualification?.nameLabel}
                   {...field}
                 />
               </FormControl>
@@ -78,7 +90,7 @@ const ChatDetailsForm = ({ onSendMessage, type }: Props) => {
                   className={
                     'bg-secondary border-none shadow hover:shadow-lg transition-all placeholder:font-semibold'
                   }
-                  placeholder={'Your email (if we get disconnected)'}
+                  placeholder={messageForm?.preQualification?.contactLabel}
                   {...field}
                 />
               </FormControl>
@@ -98,7 +110,7 @@ const ChatDetailsForm = ({ onSendMessage, type }: Props) => {
                   className={
                     'resize-none bg-secondary border-none shadow hover:shadow-lg transition-all placeholder:font-semibold'
                   }
-                  placeholder={'Question/Comment'}
+                  placeholder={messageForm?.preQualification?.questionLabel}
                   {...field}
                 />
               </FormControl>
@@ -109,7 +121,7 @@ const ChatDetailsForm = ({ onSendMessage, type }: Props) => {
 
         <Button type="submit" className={'font-bold py-6 w-fit ms-auto'}>
           <SendHorizonal className={'w-5 h-5 mr-2'} />
-          {type === 'away' ? 'Send Message' : 'Start Chatting'}
+          {messageForm?.buttonLabel}
         </Button>
       </form>
     </Form>

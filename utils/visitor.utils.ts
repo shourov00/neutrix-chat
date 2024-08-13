@@ -14,3 +14,13 @@ export function generateUniqueVisitorName() {
     name: `${randomColor} ${randomFruit}`,
   }
 }
+
+export const getNameInitials = (name?: string) => {
+  if (!name) return ''
+
+  const rgx = /(\b\w)/g
+  const initials = Array.from(name.matchAll(rgx)) || []
+  return (
+    (initials.shift()?.[1] || '') + (initials.pop()?.[1] || '')
+  ).toUpperCase()
+}

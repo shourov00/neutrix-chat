@@ -25,20 +25,24 @@ import ChatInviteDialog from '@/src/components/ChatInviteDialog'
 import ChatWidget from '@/src/components/chat-widget/ChatWidget'
 import { useVisitor } from '@/hooks/useVisitor'
 import { Toaster } from '@/src/components/ui/sonner'
+import { ChatInvite } from '@/models/chatInviteModels'
+import { filterChatInvites } from '@/utils/chatInvites.utils'
+import { CompanyInfo } from '@/models/chatModels'
 
 interface props {
   siteId: string
 }
 
 export default function App({ siteId }: props) {
-  const { data, isLoading } = useSiteData()
-  const [dialogs, setDialogs] = React.useState<React.JSX.Element[]>([])
   const [visitor] = useVisitor()
+  const { data, isLoading } = useSiteData(visitor.id)
+  const [dialogs, setDialogs] = React.useState<React.JSX.Element[]>([])
   const { mutate: addVisitorMutation } = useAddVisitor(
     siteId,
     visitor.lastSessionId,
   )
   const { mutate: addVisitorResponseMutation } = useAddVisitorResponse(siteId)
+  const isChatLauncherActive = data?.chatSettings?.chat?.launcher?.active
 
   useEffect(() => {
     addResponseMessage('Welcome')
@@ -56,9 +60,14 @@ export default function App({ siteId }: props) {
 
   return (
     <>
-      {/*{dialogs}*/}
+      {dialogs}
 
-      <ChatWidget />
+      {isChatLauncherActive && (
+        <ChatWidget
+          chatSettings={data?.chatSettings}
+          companyInfo={data?.companyInfo}
+        />
+      )}
       <Toaster position={'top-center'} />
     </>
   )
@@ -70,9 +79,16 @@ const generateDialogs = (
 ): React.JSX.Element[] => {
   const surveys = data?.surveys || []
   const announcements = data?.announcements || []
+  const chatInvites = data?.chatInvites || []
+  const companyInfo = data?.companyInfo || null
 
-  const dialogs: React.JSX.Element[] = [
-    <ChatInviteDialog id={uuidv4()} />,
+  return [
+    ...renderChatInviteDialogs(
+      chatInvites,
+      companyInfo,
+      ChatInviteDialog,
+      addVisitorResponseMutation,
+    ),
     ...renderSurveyDialogs(
       SurveyEnumType.RATING,
       surveys,
@@ -110,8 +126,6 @@ const generateDialogs = (
       addVisitorResponseMutation,
     ),
   ]
-
-  return dialogs
 }
 
 const renderSurveyDialogs = (
@@ -124,17 +138,17 @@ const renderSurveyDialogs = (
   return filteredSurveys.map((survey: Survey) =>
     survey?.settings?.invite?.enabled ? (
       <InviteDialog
+        id={uuidv4()}
         key={survey._id}
         invite={survey?.settings?.invite}
         survey={survey}
-        id={uuidv4()}
         handleResponse={addVisitorResponseMutation}
       />
     ) : (
       <DialogComponent
+        id={uuidv4()}
         key={survey._id}
         survey={survey}
-        id={uuidv4()}
         handleResponse={addVisitorResponseMutation}
       />
     ),
@@ -153,16 +167,35 @@ const renderAnnouncementsDialogs = (
   )
   return filteredAnnouncements.map((announcement: Announcement) => (
     <DialogComponent
+      id={uuidv4()}
       key={announcement._id}
       announcement={announcement}
-      id={uuidv4()}
       handleResponse={addVisitorResponseMutation}
     />
   ))
 }
 
-const useSiteData = () =>
+const renderChatInviteDialogs = (
+  chatInvites: ChatInvite[],
+  companyInfo: CompanyInfo,
+  DialogComponent: React.FC<any>,
+  addVisitorResponseMutation: (response: VisitorResponse) => void,
+) => {
+  const filteredChatInvites = filterChatInvites(chatInvites)
+  return filteredChatInvites.map((chatInvite: ChatInvite) => (
+    <DialogComponent
+      id={uuidv4()}
+      key={chatInvite._id}
+      chatInvite={chatInvite}
+      companyInfo={companyInfo}
+      handleResponse={addVisitorResponseMutation}
+    />
+  ))
+}
+
+const useSiteData = (visitorId: string) =>
   useQuery({
     queryKey: [SITE_DATA],
-    queryFn: () => getSiteData().then((res) => res.data.data),
+    enabled: !!visitorId,
+    queryFn: () => getSiteData(visitorId).then((res) => res.data.data),
   })

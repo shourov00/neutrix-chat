@@ -1,3 +1,5 @@
+import { AnnouncementDevice } from '@/models/announcementModels'
+
 export interface VisitorChoice {
   id?: string
   name: string
@@ -23,13 +25,14 @@ export interface VisitorQuestions {
 
 export interface ResponseMeta {
   questions?: VisitorQuestions
+  devices?: AnnouncementDevice[]
 }
 
 export interface VisitorResponse {
   siteId?: string
   type?: string
   subType?: string
-  responseType?: 'survey' | 'announcement'
+  responseType?: 'survey' | 'announcement' | 'chat-invite'
   responseId?: string
   status?: 'viewed' | 'completed' | 'dismissed'
   meta?: ResponseMeta

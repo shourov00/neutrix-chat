@@ -24,15 +24,6 @@ export enum LocationAudienceMatchType {
   EXACT = 'exact',
 }
 
-export enum SurveyStepEnum {
-  INVITE = 'invite',
-  QUESTION = 'question',
-  THANKS = 'thanks',
-  AUDIENCE = 'audience',
-  DELIVERY = 'delivery',
-  SUMMARY = 'summary',
-}
-
 export enum CommunicationStatusEnumType {
   READY = 'ready',
   PAUSED = 'paused',
