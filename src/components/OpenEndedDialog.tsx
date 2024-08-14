@@ -4,7 +4,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/src/components/ui/dialog'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Question, Survey } from '@/models/surveyModels'
 import ActionButton from '@/src/components/ui/action-button'
 import DialogWrapper from '@/src/components/DialogWrapper'
@@ -49,22 +49,13 @@ const OpenEndedDialog = ({ survey, id, handleResponse }: props) => {
     setQuestion(questions[current - 1] || null)
   }, [current])
 
-  const onAnswerHandle = (answer: string) => {
+  const onAnswerHandle = () => {
     if (question) {
-      setQuestionAnswer((prevAnswers) => {
-        const newAnswers = new Map(prevAnswers)
-        newAnswers.set(question.id, answer)
-        return newAnswers
-      })
-
-      if (current < questions.length) {
-        setCurrent((prev) => prev + 1)
-      } else if (current === questions.length) {
+      handleOpenEndedResponse()
+      if (current === questions.length) {
         close()
         setShowThanks(true)
       }
-
-      handleOpenEndedResponse()
     }
   }
 
@@ -83,11 +74,13 @@ const OpenEndedDialog = ({ survey, id, handleResponse }: props) => {
   const moveNext = () => {
     setCurrent((prev) => prev + 1)
     setStartTime(Date.now())
+    onAnswerHandle()
   }
 
   const movePrevious = () => {
     setCurrent((prev) => prev - 1)
     setStartTime(Date.now())
+    onAnswerHandle()
   }
 
   const handleDialogClose = () => {
@@ -126,17 +119,20 @@ const OpenEndedDialog = ({ survey, id, handleResponse }: props) => {
             <Textarea
               className={'!mt-2'}
               placeholder={question?.meta?.comment || 'Enter response here...'}
-              onChange={(e) => onAnswerHandle(e.target.value)}
+              onChange={(e) => {
+                setQuestionAnswer((prevAnswers) => {
+                  const newAnswers = new Map(prevAnswers)
+                  newAnswers.set(question.id, e.target.value)
+                  return newAnswers
+                })
+              }}
             />
 
-            {questions?.length === 1 && (
+            {current === questions?.length && (
               <Button
                 size={'sm'}
                 className={'font-bold h-8 mt-4'}
-                onClick={() => {
-                  close()
-                  setShowThanks(true)
-                }}
+                onClick={onAnswerHandle}
               >
                 Send
               </Button>

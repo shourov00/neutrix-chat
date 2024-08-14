@@ -38,7 +38,7 @@ const AwayFrom = ({ onSendMessage, chatSettings }: Props) => {
                   {getOfficeHours(chatSettings?.chat?.advanced)}
                 </span>
               ) : (
-                <span>Out of office</span>
+                <span>We are currently not available.</span>
               )}
             </div>
           )}
