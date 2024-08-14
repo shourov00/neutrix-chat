@@ -1,5 +1,5 @@
 import { AudienceSettings, CommunicationStatusEnumType } from './surveyModels'
-import { Announcement, AnnouncementDevice } from '@/models/announcementModels'
+import { AnnouncementDevice } from '@/models/announcementModels'
 
 export interface RuleValue {
   source?: 'all' | 'specific'
