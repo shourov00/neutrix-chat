@@ -2,7 +2,18 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from '@/src/App'
 import QueryClientProvider from '@/src/QueryClientProvider'
+/**
+ * Immediately-invoked function expression (IIFE) to initialize and render the React application.
+ * This script is designed to be included in an HTML page and will mount a React application
+ * into a dynamically created div element.
+ */
 ;(function () {
+  /**
+   * Retrieves the source URL of the currently executing script.
+   *
+   * @returns {string} - The URL of the currently executing script.
+   * @throws Will throw an error if no script is currently being executed.
+   */
   const getCurrentScriptSrc = (): string => {
     const currentScript = document.currentScript as HTMLScriptElement
     if (!currentScript) {
@@ -29,7 +40,8 @@ import QueryClientProvider from '@/src/QueryClientProvider'
 
   const scriptSrc = getCurrentScriptSrc()
   const queryParams = getQueryParams(scriptSrc)
-  const siteId = queryParams.siteId
+  const siteId =
+    process.env.ENVIRONMENT !== 'local' ? queryParams.siteId : '123123123'
 
   if (process.env.ENVIRONMENT !== 'local' && !siteId) {
     throw new Error('siteId not found')
@@ -46,8 +58,7 @@ import QueryClientProvider from '@/src/QueryClientProvider'
   root.render(
     <React.StrictMode>
       <QueryClientProvider>
-        {/*TODO -> remove hard coded siteid */}
-        <App siteId={siteId || '123123123'} />
+        <App siteId={siteId} />
       </QueryClientProvider>
     </React.StrictMode>,
   )

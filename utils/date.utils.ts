@@ -23,7 +23,6 @@ export const checkIfDurationExceeded = (
 }
 
 const formatTime = (hour: number): string => {
-  const adjustedHour = hour > 12 ? hour - 12 : hour === 0 ? 12 : hour
   return format(parse(`${hour}:00`, 'H:mm', new Date()), 'ha')
 }
 
@@ -64,5 +63,8 @@ export const showChatAwayForm = (chatAwayAdvance: ChatAwayAdvance) => {
   const minTimeDate = addHours(startOfDay(new Date()), officeHours?.min)
   const maxTimeDate = addHours(startOfDay(new Date()), officeHours?.max)
 
-  return !isWithinInterval(new Date(), { start: minTimeDate, end: maxTimeDate })
+  return !(
+    officeHours?.active &&
+    isWithinInterval(new Date(), { start: minTimeDate, end: maxTimeDate })
+  )
 }

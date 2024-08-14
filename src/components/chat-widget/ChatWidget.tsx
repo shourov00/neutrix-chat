@@ -51,7 +51,7 @@ const ChatWidget = ({ chatSettings, companyInfo }: Props) => {
     showChatAwayForm(chatSettings?.chat?.advanced),
   )
   const [messages, setMessages] = useState<ChatMessage[]>([])
-  const [chatHeight, setChatHeight] = useState<number>(520)
+  const [chatHeight, setChatHeight] = useState<number>(510)
   const chatContainerRef = useRef<HTMLDivElement>(null)
   const isChatPositionLeft = chatSettings?.chat?.launcher?.position === 'left'
 
@@ -291,21 +291,22 @@ const ChatWidget = ({ chatSettings, companyInfo }: Props) => {
         </DialogHeader>
         <ScrollArea className="w-full" style={{ height: `${chatHeight}px` }}>
           <div className={'p-5 flex flex-col gap-5'} ref={chatContainerRef}>
-            {messages.map((message: ChatMessage) =>
-              message?.senderId === visitor.id ? (
-                <SenderMessage
-                  key={message?.createdAt?.toString()}
-                  message={message}
-                />
-              ) : (
-                <ReceiverMessage
-                  key={message?.createdAt?.toString()}
-                  message={message}
-                />
-              ),
-            )}
+            {!isAwayFrom &&
+              messages.map((message: ChatMessage) =>
+                message?.senderId === visitor.id ? (
+                  <SenderMessage
+                    key={message?.createdAt?.toString()}
+                    message={message}
+                  />
+                ) : (
+                  <ReceiverMessage
+                    key={message?.createdAt?.toString()}
+                    message={message}
+                  />
+                ),
+              )}
 
-            {messages?.length === 1 && (
+            {!isAwayFrom && messages?.length === 1 && (
               <div
                 className={
                   'text-sm font-semibold bg-secondary p-4 rounded-md text-primary/75'
@@ -346,7 +347,7 @@ const ChatWidget = ({ chatSettings, companyInfo }: Props) => {
           </div>
         </ScrollArea>
 
-        {!isRequirePreQualification && !isAwayFrom && (
+        {(!isRequirePreQualification || messages.length > 0) && !isAwayFrom && (
           <ChatInputBar
             onSendMessage={onSendMessage}
             setChatHeight={setChatHeight}

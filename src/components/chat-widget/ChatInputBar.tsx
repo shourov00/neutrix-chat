@@ -27,7 +27,7 @@ const ChatInputBar = ({ onSendMessage, setChatHeight }: Props) => {
   useAutosizeTextArea(textAreaRef.current, value)
 
   useEffect(() => {
-    setChatHeight(isEmoji ? 235 : 520)
+    setChatHeight(isEmoji ? 235 : 510)
   }, [isEmoji])
 
   const { mutate: mutateNewChatRoom } = useAddChatRoom({ onSendMessage })
