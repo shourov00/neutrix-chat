@@ -1,7 +1,5 @@
 import React, { useEffect } from 'react'
-import { addResponseMessage } from 'react-chat-widget'
 import './global.css'
-import 'react-chat-widget/lib/styles.css'
 import { Survey, SurveyEnumType } from '@/models/surveyModels'
 import InviteDialog from '@/src/components/InviteDialog'
 import RatingDialog from '@/src/components/RatingDialog'
@@ -45,7 +43,12 @@ export default function App({ siteId }: props) {
   const isChatLauncherActive = data?.chatSettings?.chat?.launcher?.active
 
   useEffect(() => {
-    addResponseMessage('Welcome')
+    if (!localStorage.getItem('visitor')) {
+      addVisitorMutation()
+    }
+  }, [])
+
+  useEffect(() => {
     setSiteIdAtom(siteId)
   }, [siteId, visitor.lastSessionId])
 

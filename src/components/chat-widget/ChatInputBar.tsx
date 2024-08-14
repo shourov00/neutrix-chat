@@ -10,6 +10,7 @@ import { ChatMessage } from '@/models/chatModels'
 import { cn } from '@/lib/utils'
 import { MAX_FILE_UPLOAD_SIZE } from '@/constants'
 import { toast } from 'sonner'
+import { useAddChatRoom } from '@/hooks/useAddChatRoom'
 
 interface Props {
   onSendMessage: (message: ChatMessage) => void
@@ -29,6 +30,8 @@ const ChatInputBar = ({ onSendMessage, setChatHeight }: Props) => {
     setChatHeight(isEmoji ? 235 : 520)
   }, [isEmoji])
 
+  const { mutate: mutateNewChatRoom } = useAddChatRoom({ onSendMessage })
+
   const handleChange = (evt: React.ChangeEvent<HTMLTextAreaElement>) => {
     const val = evt.target?.value
     setValue(val)
@@ -39,22 +42,29 @@ const ChatInputBar = ({ onSendMessage, setChatHeight }: Props) => {
   }
 
   const handleSendMessage = () => {
+    const newChatMessage: ChatMessage = {
+      siteId: getSiteIdAtom(),
+      status: 'sent',
+      chatId: visitor.chatId,
+      content: value,
+      messageType: 'text',
+      senderId: visitor.id,
+      name: visitor.name,
+      createdAt: new Date(),
+      isLoading: !!files.length,
+      attachments: files.map((file) => ({
+        file,
+        type: 'image',
+      })),
+    }
+
     if (value.trim() || files.length) {
-      onSendMessage({
-        siteId: getSiteIdAtom(),
-        status: 'sent',
-        chatId: visitor.chatId,
-        content: value,
-        messageType: 'text',
-        senderId: visitor.id,
-        name: visitor.name,
-        createdAt: new Date(),
-        isLoading: !!files.length,
-        attachments: files.map((file) => ({
-          file,
-          type: 'image',
-        })),
-      })
+      if (!visitor.chatId) {
+        mutateNewChatRoom(newChatMessage)
+      } else {
+        onSendMessage(newChatMessage)
+      }
+
       setValue('')
       setFiles([])
     }

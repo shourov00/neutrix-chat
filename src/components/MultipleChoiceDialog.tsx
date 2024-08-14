@@ -54,11 +54,11 @@ const MultipleChoiceDialog = ({ survey, id, handleResponse }: props) => {
     }
   }
 
-  const handleMultipleChoiceResponse = () => {
-    const choices = question?.meta?.choices?.filter((item) =>
-      checkedValue.includes(item.name),
-    )
+  const handleMultipleChoiceResponse = (choice?: string) => {
     const responseTime = Date.now() - startTime
+    const choices = question?.meta?.choices?.filter(
+      (item) => choice === item.name || checkedValue.includes(item.name),
+    )
     const newChoices: VisitorChoice[] =
       choices?.map((item) => ({
         name: item.name,
@@ -88,6 +88,14 @@ const MultipleChoiceDialog = ({ survey, id, handleResponse }: props) => {
     const response = handleSurveyResponse({
       status: 'dismissed',
       survey,
+    })
+    handleResponse(response)
+  }
+
+  const handleFeedback = (feedback: string) => {
+    const response = handleSurveyResponse({
+      survey,
+      feedback,
     })
     handleResponse(response)
   }
@@ -127,6 +135,7 @@ const MultipleChoiceDialog = ({ survey, id, handleResponse }: props) => {
                           moveNext()
                         } else {
                           close()
+                          handleMultipleChoiceResponse(choice?.name)
                           setShowThanks(true)
                         }
                       }
@@ -189,6 +198,7 @@ const MultipleChoiceDialog = ({ survey, id, handleResponse }: props) => {
         <ThankYouDialog
           id={id + 1}
           thanks={survey?.settings?.thanks?.default}
+          handleFeedback={handleFeedback}
         />
       )}
     </>

@@ -28,6 +28,7 @@ interface SurveyResponseProps {
   comment?: string
   commentPreview?: string
   responseTime?: number
+  feedback?: string
 }
 
 export const handleSurveyResponse = ({
@@ -38,6 +39,7 @@ export const handleSurveyResponse = ({
   comment,
   commentPreview,
   responseTime,
+  feedback,
 }: SurveyResponseProps): VisitorResponse => {
   return {
     responseId: survey?._id,
@@ -58,6 +60,7 @@ export const handleSurveyResponse = ({
           },
         ],
       },
+      feedback,
     },
   }
 }

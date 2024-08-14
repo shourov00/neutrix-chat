@@ -8,13 +8,26 @@ import { ThanksSettings } from '@/models/surveyModels'
 import DialogWrapper from '@/src/components/DialogWrapper'
 import { Button } from '@/src/components/ui/button'
 import { Input } from '@/src/components/ui/input'
+import { useDialog } from '@/hooks/useDialog'
 
 interface props {
   thanks?: ThanksSettings
   id: string
+  handleFeedback?: (value: string) => void
 }
 
-const ThankYouDialog = ({ thanks, id }: props) => {
+const ThankYouDialog = ({ thanks, id, handleFeedback }: props) => {
+  const { close } = useDialog()
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault()
+      const target = event.target as HTMLInputElement
+      if (handleFeedback && target.value) {
+        handleFeedback(target.value)
+      }
+      close()
+    }
+  }
   return (
     <>
       {thanks && (
@@ -34,6 +47,7 @@ const ThankYouDialog = ({ thanks, id }: props) => {
                 type="text"
                 className={'mt-6'}
                 placeholder={thanks?.placeholder || 'Tell us more...'}
+                onKeyDown={handleKeyDown}
               />
             )}
 

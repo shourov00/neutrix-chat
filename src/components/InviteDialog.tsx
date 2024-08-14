@@ -12,6 +12,7 @@ import DialogWrapper from '@/src/components/DialogWrapper'
 import { useDialog } from '@/hooks/useDialog'
 import OpenEndedDialog from '@/src/components/OpenEndedDialog'
 import { VisitorResponse } from '@/models/responseModels'
+import MultipleChoiceDialog from '@/src/components/MultipleChoiceDialog'
 
 interface props {
   invite: InviteSettings
@@ -76,6 +77,14 @@ const InviteDialog = ({ invite, survey, id, handleResponse }: props) => {
         <OpenEndedDialog
           survey={survey}
           id={id + 2}
+          handleResponse={handleResponse}
+        />
+      )}
+
+      {showQuestions && survey.type === SurveyEnumType.MULTIPLE_CHOICE && (
+        <MultipleChoiceDialog
+          survey={survey}
+          id={id + 3}
           handleResponse={handleResponse}
         />
       )}

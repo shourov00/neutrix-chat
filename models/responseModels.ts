@@ -26,6 +26,7 @@ export interface VisitorQuestions {
 export interface ResponseMeta {
   questions?: VisitorQuestions
   devices?: AnnouncementDevice[]
+  feedback?: string
 }
 
 export interface VisitorResponse {

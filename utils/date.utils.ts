@@ -1,4 +1,13 @@
-import { addDays, format, isAfter, parse, parseISO } from 'date-fns'
+import {
+  addDays,
+  addHours,
+  format,
+  isAfter,
+  isWithinInterval,
+  parse,
+  parseISO,
+  startOfDay,
+} from 'date-fns'
 import { ChatAwayAdvance } from '@/models/chatModels'
 
 export const checkIfDurationExceeded = (
@@ -15,19 +24,20 @@ export const checkIfDurationExceeded = (
 
 const formatTime = (hour: number): string => {
   const adjustedHour = hour > 12 ? hour - 12 : hour === 0 ? 12 : hour
-  return format(parse(`${adjustedHour}:00`, 'H:mm', new Date()), 'ha')
+  return format(parse(`${hour}:00`, 'H:mm', new Date()), 'ha')
 }
 
+const daysOfWeek = [
+  'sunday',
+  'monday',
+  'tuesday',
+  'wednesday',
+  'thursday',
+  'friday',
+  'saturday',
+]
+
 export const getOfficeHours = (chatAwayAdvance: ChatAwayAdvance) => {
-  const daysOfWeek = [
-    'sunday',
-    'monday',
-    'tuesday',
-    'wednesday',
-    'thursday',
-    'friday',
-    'saturday',
-  ]
   const today = daysOfWeek[
     new Date().getDay()
   ] as keyof ChatAwayAdvance['officeHours']
@@ -42,4 +52,17 @@ export const getOfficeHours = (chatAwayAdvance: ChatAwayAdvance) => {
   } else {
     return null
   }
+}
+
+export const showChatAwayForm = (chatAwayAdvance: ChatAwayAdvance) => {
+  const today = daysOfWeek[
+    new Date().getDay()
+  ] as keyof ChatAwayAdvance['officeHours']
+
+  const officeHours = chatAwayAdvance?.officeHours?.[today]
+
+  const minTimeDate = addHours(startOfDay(new Date()), officeHours?.min)
+  const maxTimeDate = addHours(startOfDay(new Date()), officeHours?.max)
+
+  return !isWithinInterval(new Date(), { start: minTimeDate, end: maxTimeDate })
 }

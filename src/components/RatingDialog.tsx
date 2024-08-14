@@ -70,7 +70,7 @@ const RatingDialog = ({ survey, id, handleResponse }: props) => {
         return newRatings
       })
 
-      handleLikeDislikeResponse(rating)
+      handleRatingResponse(rating)
     }
   }
 
@@ -85,7 +85,7 @@ const RatingDialog = ({ survey, id, handleResponse }: props) => {
     return count === 0 ? 0 : total / count
   }
 
-  const handleLikeDislikeResponse = (rating: number) => {
+  const handleRatingResponse = (rating: number) => {
     const responseTime = Date.now() - startTime
     const choices: VisitorChoice[] = [
       {
@@ -117,6 +117,14 @@ const RatingDialog = ({ survey, id, handleResponse }: props) => {
     const response = handleSurveyResponse({
       status: 'dismissed',
       survey,
+    })
+    handleResponse(response)
+  }
+
+  const handleFeedback = (feedback: string) => {
+    const response = handleSurveyResponse({
+      survey,
+      feedback,
     })
     handleResponse(response)
   }
@@ -174,6 +182,7 @@ const RatingDialog = ({ survey, id, handleResponse }: props) => {
         <ThankYouDialog
           id={id + 1}
           thanks={survey?.settings?.thanks?.default}
+          handleFeedback={handleFeedback}
         />
       )}
       {showLowRatingThanks && (
@@ -182,11 +191,13 @@ const RatingDialog = ({ survey, id, handleResponse }: props) => {
             <ThankYouDialog
               id={id + 2}
               thanks={survey?.settings?.thanks?.lowRating}
+              handleFeedback={handleFeedback}
             />
           ) : (
             <ThankYouDialog
               id={id + 1}
               thanks={survey?.settings?.thanks?.default}
+              handleFeedback={handleFeedback}
             />
           )}
         </>

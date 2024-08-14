@@ -31,6 +31,7 @@ import useWebSocket from '@/hooks/useWebSocket'
 import { toast } from 'sonner'
 import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar'
 import { getNameInitials } from '@/utils/visitor.utils'
+import { showChatAwayForm } from '@/utils/date.utils'
 
 interface Props {
   chatSettings: ChatSettings
@@ -46,7 +47,9 @@ const ChatWidget = ({ chatSettings, companyInfo }: Props) => {
   const [isRequirePreQualification] = useState(
     chatSettings?.chat?.messaging?.preQualificationActive,
   )
-  const [isAwayFrom, setIsAwayFrom] = useState<boolean>(true)
+  const [isAwayFrom] = useState<boolean>(
+    showChatAwayForm(chatSettings?.chat?.advanced),
+  )
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [chatHeight, setChatHeight] = useState<number>(520)
   const chatContainerRef = useRef<HTMLDivElement>(null)

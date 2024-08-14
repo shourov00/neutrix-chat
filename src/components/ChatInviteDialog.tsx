@@ -85,14 +85,14 @@ const ChatInviteDialog = ({
           }}
           className={'rounded-2xl max-w-[220px] space-y-1'}
         >
-          {chatInvite?.settings?.icon?.type !== 'none' && (
+          {chatInvite?.settings?.icon?.iconType !== 'none' && (
             <Avatar>
               <AvatarImage
                 className={
                   'rounded-full object-cover w-8 h-8 absolute border border-white -left-[10px] -top-[10px]'
                 }
                 src={
-                  chatInvite?.settings?.icon?.type === 'company'
+                  chatInvite?.settings?.icon?.iconType === 'company'
                     ? companyInfo?.companyImage
                     : companyInfo?.image
                 }

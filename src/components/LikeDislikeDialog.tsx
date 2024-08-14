@@ -59,6 +59,14 @@ const LikeDislikeDialog = ({ survey, id, handleResponse }: props) => {
     handleResponse(response)
   }
 
+  const handleFeedback = (feedback: string) => {
+    const response = handleSurveyResponse({
+      survey,
+      feedback,
+    })
+    handleResponse(response)
+  }
+
   return (
     <>
       {question && (
@@ -113,12 +121,14 @@ const LikeDislikeDialog = ({ survey, id, handleResponse }: props) => {
         <ThankYouDialog
           id={id + 1}
           thanks={survey?.settings?.thanks?.default}
+          handleFeedback={handleFeedback}
         />
       )}
       {showLowRatingThanks && survey?.settings?.thanks?.lowRating?.enabled && (
         <ThankYouDialog
           id={id + 2}
           thanks={survey?.settings?.thanks?.lowRating}
+          handleFeedback={handleFeedback}
         />
       )}
     </>

@@ -13,7 +13,7 @@ export interface Rule {
 }
 
 export interface Icon {
-  type?: 'user' | 'company' | 'none'
+  iconType?: 'user' | 'company' | 'none'
   id?: string
 }
 
@@ -23,7 +23,7 @@ export enum ChatInviteTimingEnumType {
 }
 
 export interface Timing {
-  type?: ChatInviteTimingEnumType
+  timingType?: ChatInviteTimingEnumType
 }
 
 export interface SendTo {
