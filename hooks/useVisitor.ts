@@ -9,6 +9,7 @@ const visitorConfig = {
   email: '',
   chatId: '',
   lastSessionId: uuidv4(),
+  chatRating: 0,
 }
 
 const visitorAtom = atomWithStorage('visitor', visitorConfig)

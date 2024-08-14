@@ -2,6 +2,7 @@ export interface VisitorChat {
   siteId: string
   status: 'active' | 'closed'
   visitor: string
+  rating?: number
 }
 
 export interface ChatMessage {
@@ -10,7 +11,7 @@ export interface ChatMessage {
   chatId?: string
   name?: string
   messageType?: 'text' | 'image' | 'video' | 'file' | 'audio'
-  status?: 'sent' | 'delivered' | 'read'
+  status?: 'sent' | 'delivered' | 'read' | 'close'
   content?: string
   senderId?: string
   attachments?: Attachment[]

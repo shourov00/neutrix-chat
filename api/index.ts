@@ -27,6 +27,10 @@ export const uploadFile = async (data: FormData) => {
   return await api.post('/upload', data)
 }
 
+export const updateChat = async (chatId: string, data: any) => {
+  return await api.patch(`/visitors-chat/${chatId}`, data)
+}
+
 export const getChatMessages = async (
   id: string,
   filterDto?: Record<string, any>,

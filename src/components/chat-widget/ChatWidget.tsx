@@ -31,7 +31,7 @@ import useWebSocket from '@/hooks/useWebSocket'
 import { toast } from 'sonner'
 import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar'
 import { getNameInitials } from '@/utils/visitor.utils'
-import { showChatAwayForm } from '@/utils/date.utils'
+import CollectFeedback from '@/src/components/chat-widget/CollectFeedback'
 
 interface Props {
   chatSettings: ChatSettings
@@ -48,11 +48,13 @@ const ChatWidget = ({ chatSettings, companyInfo }: Props) => {
     chatSettings?.chat?.messaging?.preQualificationActive,
   )
   const [isAwayFrom] = useState<boolean>(
-    showChatAwayForm(chatSettings?.chat?.advanced),
+    // showChatAwayForm(chatSettings?.chat?.advanced),
+    false,
   )
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [chatHeight, setChatHeight] = useState<number>(510)
   const chatContainerRef = useRef<HTMLDivElement>(null)
+  const [isCloseChat, setIsCloseChat] = useState(false)
   const isChatPositionLeft = chatSettings?.chat?.launcher?.position === 'left'
 
   const { data: previousChats, isLoading } = useChatMessages(
@@ -111,10 +113,18 @@ const ChatWidget = ({ chatSettings, companyInfo }: Props) => {
   useEffect(() => {
     if (previousChats && !isLoading) {
       setMessages(previousChats?.data || [])
+      if (
+        previousChats?.data[previousChats?.data.length - 1]?.status === 'close'
+      ) {
+        setIsCloseChat(true)
+      }
     }
   }, [previousChats])
 
   const handleNewMessage = (data: any) => {
+    if (data?.status === 'close') {
+      setIsCloseChat(true)
+    }
     setMessages((prev) => [...prev, data])
   }
 
@@ -293,7 +303,15 @@ const ChatWidget = ({ chatSettings, companyInfo }: Props) => {
           <div className={'p-5 flex flex-col gap-5'} ref={chatContainerRef}>
             {!isAwayFrom &&
               messages.map((message: ChatMessage) =>
-                message?.senderId === visitor.id ? (
+                chatSettings?.chat?.advanced?.feedbackCollection &&
+                message?.status === 'close' ? (
+                  <CollectFeedback
+                    key={message?.createdAt?.toString()}
+                    message={message}
+                    handleCloseChat={setIsCloseChat}
+                    isCloseChat={isCloseChat}
+                  />
+                ) : message?.senderId === visitor.id ? (
                   <SenderMessage
                     key={message?.createdAt?.toString()}
                     message={message}
@@ -347,12 +365,14 @@ const ChatWidget = ({ chatSettings, companyInfo }: Props) => {
           </div>
         </ScrollArea>
 
-        {(!isRequirePreQualification || messages.length > 0) && !isAwayFrom && (
-          <ChatInputBar
-            onSendMessage={onSendMessage}
-            setChatHeight={setChatHeight}
-          />
-        )}
+        {(!isRequirePreQualification || messages.length > 0) &&
+          !isAwayFrom &&
+          !isCloseChat && (
+            <ChatInputBar
+              onSendMessage={onSendMessage}
+              setChatHeight={setChatHeight}
+            />
+          )}
       </DialogContent>
     </Dialog>
   )
