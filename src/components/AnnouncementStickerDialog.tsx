@@ -91,7 +91,7 @@ const AnnouncementStickerDialog = ({
           <img
             src={display?.image?.url || ''}
             alt={display?.image?.name || ''}
-            className={'rounded-t-lg object-cover w-full h-[160px]'}
+            className={'rounded-t-lg object-cover w-full h-[160px] rounded-lg'}
           />
 
           <DialogHeader>
@@ -107,7 +107,8 @@ const AnnouncementStickerDialog = ({
             )}
             onClick={() => handleCompleteResponse('completed')}
           >
-            {display?.actionButton?.dismissLabel}
+            {display?.actionButton?.label ||
+              display?.actionButton?.dismissLabel}
           </Button>
         </DialogContent>
       </DialogWrapper>
