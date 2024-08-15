@@ -14,6 +14,7 @@ import QueryClientProvider from '@/src/QueryClientProvider'
    * @returns {string} - The URL of the currently executing script.
    * @throws Will throw an error if no script is currently being executed.
    */
+  console.log('rabbi', process.env.SERVER_API_ENDPOINT)
   const getCurrentScriptSrc = (): string => {
     const currentScript = document.currentScript as HTMLScriptElement
     if (!currentScript) {
