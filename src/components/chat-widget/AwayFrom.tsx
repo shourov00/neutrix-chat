@@ -18,7 +18,7 @@ const AwayFrom = ({ onSendMessage, chatSettings }: Props) => {
       {showThanks ? (
         <div
           className={
-            'text-sm font-semibold bg-secondary p-4 rounded-md text-primary/75 mt-6'
+            'neutrix-text-sm neutrix-font-semibold neutrix-bg-secondary neutrix-p-4 neutrix-rounded-md neutrix-text-primary/75 neutrix-mt-6'
           }
         >
           {chatSettings?.chat?.awayMessage?.thankYou}
@@ -28,10 +28,10 @@ const AwayFrom = ({ onSendMessage, chatSettings }: Props) => {
           {chatSettings?.chat?.awayMessage?.displayOfficeHours && (
             <div
               className={
-                'p-4 w-full rounded-md font-bold flex gap-1 text-xs items-center justify-center border'
+                'neutrix-p-4 neutrix-w-full neutrix-rounded-md neutrix-font-bold neutrix-flex neutrix-gap-1 neutrix-text-xs neutrix-items-center neutrix-justify-center neutrix-border'
               }
             >
-              <Clock5 className={'w-4 h-4'} />
+              <Clock5 className={'neutrix-w-4 neutrix-h-4'} />
               {getOfficeHours(chatSettings?.chat?.advanced) ? (
                 <span>
                   Usually online from{' '}
@@ -43,7 +43,7 @@ const AwayFrom = ({ onSendMessage, chatSettings }: Props) => {
             </div>
           )}
 
-          <div className={cn('text-sm font-semibold')}>
+          <div className={cn('neutrix-text-sm neutrix-font-semibold')}>
             {chatSettings?.chat?.awayMessage?.message}
           </div>
 

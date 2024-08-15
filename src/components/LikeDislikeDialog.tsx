@@ -75,7 +75,9 @@ const LikeDislikeDialog = ({ survey, id, handleResponse }: props) => {
             onInteractOutside={(e) => {
               e.preventDefault()
             }}
-            className={'rounded-2xl max-w-[220px] space-y-1'}
+            className={
+              'neutrix-rounded-2xl neutrix-max-w-[220px] neutrix-space-y-1'
+            }
           >
             <DialogHeader>
               <DialogTitle>{question?.title}</DialogTitle>
@@ -84,11 +86,15 @@ const LikeDislikeDialog = ({ survey, id, handleResponse }: props) => {
               )}
             </DialogHeader>
 
-            <div className={'flex gap-4 items-center justify-center'}>
+            <div
+              className={
+                'neutrix-flex neutrix-gap-4 neutrix-items-center neutrix-justify-center'
+              }
+            >
               <Button
                 variant={'secondary'}
                 className={
-                  'h-10 shadow-md hover:shadow-lg hover:bg-white transition-all'
+                  'neutrix-h-10 neutrix-shadow-md hover:neutrix-shadow-lg hover:neutrix-bg-white neutrix-transition-all'
                 }
                 onClick={() => {
                   handleLikeDislikeResponse(true)
@@ -96,13 +102,13 @@ const LikeDislikeDialog = ({ survey, id, handleResponse }: props) => {
                   setShowThanks(true)
                 }}
               >
-                <ThumbsUp className={'w-4 h-4'} />
+                <ThumbsUp className={'neutrix-w-4 neutrix-h-4'} />
               </Button>
 
               <Button
                 variant={'secondary'}
                 className={
-                  'h-10 shadow-md hover:shadow-lg hover:bg-white transition-all'
+                  'neutrix-h-10 neutrix-shadow-md hover:neutrix-shadow-lg hover:neutrix-bg-white neutrix-transition-all'
                 }
                 onClick={() => {
                   handleLikeDislikeResponse(false)
@@ -110,7 +116,7 @@ const LikeDislikeDialog = ({ survey, id, handleResponse }: props) => {
                   setShowLowRatingThanks(true)
                 }}
               >
-                <ThumbsDown className={'w-4 h-4'} />
+                <ThumbsDown className={'neutrix-w-4 neutrix-h-4'} />
               </Button>
             </div>
           </DialogContent>

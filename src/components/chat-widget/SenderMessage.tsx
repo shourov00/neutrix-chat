@@ -1,69 +1,55 @@
 import React from 'react'
-
 import { ChatMessage } from '@/models/chatModels'
 import { format } from 'date-fns'
-import { Ban, CircleAlert, UserRound } from 'lucide-react'
+import { CircleAlert, UserRound } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import Loading from '@/src/components/ui/loading'
 
 const SenderMessage = ({ message }: { message: ChatMessage }) => {
   return (
-    <div className={'flex items-end flex-col gap-2 mb-2'}>
-      <div className={'flex gap-2 items-center'}>
-        <div className={'font-bold text-sm'}>
+    <div className="neutrix-flex neutrix-items-end neutrix-flex-col neutrix-gap-2 neutrix-mb-2">
+      <div className="neutrix-flex neutrix-gap-2 neutrix-items-center">
+        <div className="neutrix-font-bold neutrix-text-sm">
           {message?.name || 'Anonymous'}
         </div>
-        <div
-          className={
-            'rounded-full w-6 h-6 bg-primary text-white flex items-center justify-center'
-          }
-        >
-          <UserRound className={'w-4 h-4'} />
+        <div className="neutrix-rounded-full neutrix-w-6 neutrix-h-6 neutrix-bg-primary neutrix-text-white neutrix-flex neutrix-items-center neutrix-justify-center">
+          <UserRound className="neutrix-w-4 neutrix-h-4" />
         </div>
       </div>
       <div
         className={cn(
-          'p-2 bg-[#ebf5ff] text-primary rounded-lg text-sm font-semibold break-all text-pretty flex flex-col',
+          'neutrix-p-2 neutrix-bg-[#ebf5ff] neutrix-text-primary neutrix-rounded-lg neutrix-text-sm neutrix-font-semibold neutrix-break-all neutrix-text-pretty neutrix-flex neutrix-flex-col',
           !message.attachments?.length &&
             message.content &&
             message.content.length <= 40 &&
-            'flex-row gap-2',
+            'neutrix-flex-row neutrix-gap-2',
         )}
       >
-        <span className="break-all">{message.content}</span>
+        <span className="neutrix-break-all">{message.content}</span>
 
         {message.attachments && (
-          <div className={'flex flex-wrap gap-2 my-1 ms-auto'}>
+          <div className="neutrix-flex neutrix-flex-wrap neutrix-gap-2 neutrix-my-1 neutrix-ms-auto">
             {message.attachments.map((attachment, index) => (
-              <div className={'relative'}>
+              <div key={index} className="neutrix-relative">
                 <img
-                  key={index}
                   alt={attachment.url || attachment.file?.name}
                   src={
                     attachment.url ||
                     (attachment?.file && URL.createObjectURL(attachment.file))
                   }
                   className={cn(
-                    'w-20 h-20 object-cover rounded-lg border',
+                    'neutrix-w-20 neutrix-h-20 neutrix-object-cover neutrix-rounded-lg neutrix-border',
                     message?.isError && 'opacity-50',
                   )}
                 />
                 {message?.isLoading && (
-                  <div
-                    className={
-                      'absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]'
-                    }
-                  >
+                  <div className="neutrix-absolute neutrix-left-[50%] neutrix-top-[50%] neutrix-translate-x-[-50%] neutrix-translate-y-[-50%]">
                     <Loading />
                   </div>
                 )}
                 {message?.isError && (
-                  <div
-                    className={
-                      'absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]'
-                    }
-                  >
-                    <CircleAlert className={'w-4 h-4 text-red-500'} />
+                  <div className="neutrix-absolute neutrix-left-[50%] neutrix-top-[50%] neutrix-translate-x-[-50%] neutrix-translate-y-[-50%]">
+                    <CircleAlert className="neutrix-w-4 neutrix-h-4 neutrix-text-red-500" />
                   </div>
                 )}
               </div>
@@ -71,7 +57,7 @@ const SenderMessage = ({ message }: { message: ChatMessage }) => {
           </div>
         )}
 
-        <div className="font-light text-[11px] text-right mt-auto">
+        <div className="neutrix-font-light neutrix-text-[11px] neutrix-text-right neutrix-mt-auto">
           {format(message?.createdAt || new Date(), 'hh:mm a')}
         </div>
       </div>

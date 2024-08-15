@@ -18,8 +18,8 @@ const RatingStar = ({
   return (
     <Star
       className={cn(
-        'w-8 h-8 hover:fill-[#ec9f1c] cursor-pointer',
-        selected && 'fill-[#ec9f1c]',
+        'neutrix-w-8 neutrix-h-8 hover:fill-[#ec9f1c] neutrix-cursor-pointer',
+        selected && 'neutrix-fill-[#ec9f1c]',
       )}
       strokeWidth={1.25}
       color={'#ec9f1c'}
@@ -47,7 +47,11 @@ const Ratings = ({ rating = 0, onRatingStarChange }: Props) => {
   }
 
   return (
-    <div className={'grid grid-cols-5 gap-1 w-full'}>
+    <div
+      className={
+        'neutrix-grid neutrix-grid-cols-5 neutrix-gap-1 neutrix-w-full'
+      }
+    >
       {[1, 2, 3, 4, 5].map((star) => (
         <RatingStar
           key={star}

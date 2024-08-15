@@ -7,16 +7,16 @@ const Toaster = ({ ...props }: ToasterProps) => {
   return (
     <Sonner
       theme={'light'}
-      className="toaster group"
+      className="toaster neutrix-group"
       toastOptions={{
         classNames: {
           toast:
-            'group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg',
-          description: 'group-[.toast]:text-muted-foreground',
+            'neutrix-group toast neutrix-group-[.toaster]:neutrix-bg-background neutrix-group-[.toaster]:neutrix-text-foreground neutrix-group-[.toaster]:neutrix-border-border neutrix-group-[.toaster]:neutrix-shadow-lg',
+          description: 'neutrix-group-[.toast]:neutrix-text-muted-foreground',
           actionButton:
-            'group-[.toast]:bg-primary group-[.toast]:text-primary-foreground',
+            'neutrix-group-[.toast]:neutrix-bg-primary neutrix-group-[.toast]:neutrix-text-primary-foreground',
           cancelButton:
-            'group-[.toast]:bg-muted group-[.toast]:text-muted-foreground',
+            'neutrix-group-[.toast]:neutrix-bg-muted neutrix-group-[.toast]:neutrix-text-muted-foreground',
         },
       }}
       {...props}

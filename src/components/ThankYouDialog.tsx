@@ -36,23 +36,28 @@ const ThankYouDialog = ({ thanks, id, handleFeedback }: props) => {
             onInteractOutside={(e) => {
               e.preventDefault()
             }}
-            className={'rounded-2xl max-w-[250px] space-y-1'}
+            className={
+              'neutrix-rounded-2xl neutrix-max-w-[250px] neutrix-space-y-1'
+            }
           >
             <DialogHeader>
-              <DialogTitle>{thanks?.title} </DialogTitle>
+              <DialogTitle>{thanks?.title}</DialogTitle>
             </DialogHeader>
 
             {thanks?.allowFeedback && (
               <Input
                 type="text"
-                className={'mt-6'}
+                className={'neutrix-mt-6'}
                 placeholder={thanks?.placeholder || 'Tell us more...'}
                 onKeyDown={handleKeyDown}
               />
             )}
 
             {thanks?.button?.active && (
-              <Button className={'w-full font-bold mt-6'} asChild>
+              <Button
+                className={'neutrix-w-full neutrix-font-bold neutrix-mt-6'}
+                asChild
+              >
                 <a href={thanks?.button?.link} target={'_blank'}>
                   {thanks?.button?.label}
                 </a>

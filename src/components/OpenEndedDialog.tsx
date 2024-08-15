@@ -107,7 +107,9 @@ const OpenEndedDialog = ({ survey, id, handleResponse }: props) => {
             onInteractOutside={(e) => {
               e.preventDefault()
             }}
-            className={'rounded-2xl max-w-[250px] space-y-1'}
+            className={
+              'neutrix-rounded-2xl neutrix-max-w-[250px] neutrix-space-y-1'
+            }
           >
             <DialogHeader>
               <DialogTitle>{question?.title} </DialogTitle>
@@ -117,7 +119,7 @@ const OpenEndedDialog = ({ survey, id, handleResponse }: props) => {
             </DialogHeader>
 
             <Textarea
-              className={'!mt-2'}
+              className={'!neutrix-mt-2'}
               placeholder={question?.meta?.comment || 'Enter response here...'}
               onChange={(e) => {
                 setQuestionAnswer((prevAnswers) => {
@@ -131,7 +133,7 @@ const OpenEndedDialog = ({ survey, id, handleResponse }: props) => {
             {current === questions?.length && (
               <Button
                 size={'sm'}
-                className={'font-bold h-8 mt-4'}
+                className={'neutrix-font-bold neutrix-h-8 neutrix-mt-4'}
                 onClick={onAnswerHandle}
               >
                 Send
@@ -141,7 +143,7 @@ const OpenEndedDialog = ({ survey, id, handleResponse }: props) => {
             {questions?.length > 1 && (
               <div
                 className={
-                  'flex items-center justify-between text-sm text-muted-foreground mt-1'
+                  'neutrix-flex neutrix-items-center neutrix-justify-between neutrix-text-sm neutrix-text-muted-foreground neutrix-mt-1'
                 }
               >
                 <ActionButton
@@ -150,7 +152,7 @@ const OpenEndedDialog = ({ survey, id, handleResponse }: props) => {
                   disabled={current === 1}
                   onClick={movePrevious}
                 />
-                <div className={'tracking-wider'}>
+                <div className={'neutrix-tracking-wider'}>
                   {current}/{questions?.length}
                 </div>
                 <ActionButton

@@ -83,13 +83,15 @@ const ChatInviteDialog = ({
           onInteractOutside={(e) => {
             e.preventDefault()
           }}
-          className={'rounded-2xl max-w-[220px] space-y-1'}
+          className={
+            'neutrix-rounded-2xl neutrix-max-w-[220px] neutrix-space-y-1'
+          }
         >
           {chatInvite?.settings?.icon?.iconType !== 'none' && (
             <Avatar>
               <AvatarImage
                 className={
-                  'rounded-full object-cover w-8 h-8 absolute border border-white -left-[10px] -top-[10px]'
+                  'neutrix-rounded-full neutrix-object-cover neutrix-w-8 neutrix-h-8 neutrix-absolute neutrix-border neutrix-border-white -neutrix-left-[10px] -neutrix-top-[10px]'
                 }
                 src={
                   chatInvite?.settings?.icon?.iconType === 'company'
@@ -99,7 +101,7 @@ const ChatInviteDialog = ({
               />
               <AvatarFallback
                 className={
-                  'absolute -left-[10px] -top-[10px] bg-[#fbf6c6] font-bold text-sm border rounded-full border-white p-2'
+                  'neutrix-absolute -neutrix-left-[10px] -neutrix-top-[10px] neutrix-bg-[#fbf6c6] neutrix-font-bold neutrix-text-sm neutrix-border neutrix-rounded-full neutrix-border-white neutrix-p-2'
                 }
               >
                 {getNameInitials(companyInfo?.fullName)}
@@ -110,7 +112,8 @@ const ChatInviteDialog = ({
           <DialogHeader>
             <DialogDescription
               className={cn(
-                !chatInvite?.settings?.displayFullMessage && 'line-clamp-3',
+                !chatInvite?.settings?.displayFullMessage &&
+                  'neutrix-line-clamp-3',
               )}
             >
               {chatInvite?.settings?.message}

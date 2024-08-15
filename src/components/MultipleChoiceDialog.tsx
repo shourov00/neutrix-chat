@@ -108,7 +108,9 @@ const MultipleChoiceDialog = ({ survey, id, handleResponse }: props) => {
             onInteractOutside={(e) => {
               e.preventDefault()
             }}
-            className={'rounded-2xl max-w-[250px] space-y-1'}
+            className={
+              'neutrix-rounded-2xl neutrix-max-w-[250px] neutrix-space-y-1'
+            }
           >
             <DialogHeader>
               <DialogTitle>{question?.title} </DialogTitle>
@@ -117,14 +119,14 @@ const MultipleChoiceDialog = ({ survey, id, handleResponse }: props) => {
               )}
             </DialogHeader>
 
-            <div className={'flex flex-col gap-3'}>
+            <div className={'neutrix-flex neutrix-flex-col neutrix-gap-3'}>
               {question?.meta?.choices?.map(
                 (choice: QuestionChoices, index: number) => (
                   <ActionButton
                     key={index}
                     title={choice?.name}
                     className={
-                      'bg-secondary w-full shadow hover:shadow-md justify-start'
+                      'neutrix-bg-secondary neutrix-w-full neutrix-shadow hover:neutrix-shadow-md neutrix-justify-start'
                     }
                     onClick={(e) => {
                       if (question?.meta?.multipleSelect) {
@@ -149,7 +151,7 @@ const MultipleChoiceDialog = ({ survey, id, handleResponse }: props) => {
                 <Button
                   variant={checkedValue.length > 0 ? 'default' : 'secondary'}
                   size={'sm'}
-                  className={'font-bold h-8 mt-4'}
+                  className={'neutrix-font-bold neutrix-h-8 neutrix-mt-4'}
                   onClick={() => {
                     if (checkedValue.length > 0) {
                       handleMultipleChoiceResponse()
@@ -170,7 +172,7 @@ const MultipleChoiceDialog = ({ survey, id, handleResponse }: props) => {
             {questions?.length > 1 && (
               <div
                 className={
-                  'flex items-center justify-between text-sm text-muted-foreground mt-1'
+                  'neutrix-flex neutrix-items-center neutrix-justify-between neutrix-text-sm neutrix-text-muted-foreground neutrix-mt-1'
                 }
               >
                 <ActionButton
@@ -179,7 +181,7 @@ const MultipleChoiceDialog = ({ survey, id, handleResponse }: props) => {
                   disabled={current === 1}
                   onClick={movePrevious}
                 />
-                <div className={'tracking-wider'}>
+                <div className={'neutrix-tracking-wider'}>
                   {current}/{questions?.length}
                 </div>
                 <ActionButton

@@ -5,25 +5,26 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
 const buttonVariants = cva(
-  'outline-none inline-flex items-center justify-center whitespace-nowrap rounded-xl text-sm font-medium ring-offset-background transition-colors disabled:pointer-events-none disabled:opacity-50',
+  'neutrix-outline-none neutrix-inline-flex neutrix-items-center neutrix-justify-center neutrix-whitespace-nowrap neutrix-rounded-xl neutrix-text-sm neutrix-font-medium neutrix-ring-offset-background neutrix-transition-colors neutrix-disabled:pointer-events-none neutrix-disabled:opacity-50',
   {
     variants: {
       variant: {
-        default: 'bg-primary text-primary-foreground hover:bg-primary/90',
+        default:
+          'neutrix-bg-primary neutrix-text-primary-foreground hover:bg-primary/90',
         destructive:
-          'bg-destructive text-destructive-foreground hover:bg-destructive/90',
+          'neutrix-bg-destructive neutrix-text-destructive-foreground hover:bg-destructive/90',
         outline:
-          'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
+          'neutrix-border neutrix-border-input neutrix-bg-background hover:bg-accent hover:text-accent-foreground',
         secondary:
-          'bg-secondary text-secondary-foreground hover:bg-secondary/80',
+          'neutrix-bg-secondary neutrix-text-secondary-foreground hover:bg-secondary/80',
         ghost: 'hover:bg-accent hover:text-accent-foreground',
-        link: 'text-primary underline-offset-4 hover:underline',
+        link: 'neutrix-text-primary neutrix-underline-offset-4 hover:underline',
       },
       size: {
-        default: 'h-10 px-4 py-2',
-        sm: 'h-9 rounded-xl px-3',
-        lg: 'h-11 rounded-xl px-8',
-        icon: 'h-10 w-10',
+        default: 'neutrix-h-10 neutrix-px-4 neutrix-py-2',
+        sm: 'neutrix-h-9 neutrix-rounded-xl neutrix-px-3',
+        lg: 'neutrix-h-11 neutrix-rounded-xl neutrix-px-8',
+        icon: 'neutrix-h-10 neutrix-w-10',
       },
     },
     defaultVariants: {

@@ -1,5 +1,4 @@
 import React from 'react'
-
 import { ChatMessage } from '@/models/chatModels'
 import { format } from 'date-fns'
 import { UserRound } from 'lucide-react'
@@ -7,40 +6,35 @@ import { cn } from '@/lib/utils'
 
 const ReceiverMessage = ({ message }: { message: ChatMessage }) => {
   return (
-    <div className={'flex items-start flex-col gap-2 mb-2'}>
-      <div className={'flex gap-2 items-center'}>
-        <div
-          className={
-            'rounded-full w-6 h-6 bg-primary text-white flex items-center justify-center'
-          }
-        >
-          <UserRound className={'w-4 h-4'} />
+    <div className="neutrix-flex items-start neutrix-flex-col neutrix-gap-2 neutrix-mb-2">
+      <div className="neutrix-flex neutrix-gap-2 neutrix-items-center">
+        <div className="neutrix-rounded-full neutrix-w-6 neutrix-h-6 neutrix-bg-primary neutrix-text-white neutrix-flex neutrix-items-center neutrix-justify-center">
+          <UserRound className="neutrix-w-4 neutrix-h-4" />
         </div>
-        <div className={'font-bold text-sm'}>
+        <div className="neutrix-font-bold neutrix-text-sm">
           {message?.name || 'Anonymous'}
         </div>
       </div>
       <div
         className={cn(
-          'p-2 bg-[#f3f4f6] text-primary rounded-lg text-sm font-semibold break-all text-pretty flex flex-col',
+          'neutrix-p-2 neutrix-bg-[#f3f4f6] neutrix-text-primary neutrix-rounded-lg neutrix-text-sm neutrix-font-semibold neutrix-break-all neutrix-text-pretty neutrix-flex neutrix-flex-col',
           !message.attachments?.length &&
             message.content &&
             message.content.length <= 40 &&
-            'flex-row gap-2',
+            'neutrix-flex-row neutrix-gap-2',
         )}
       >
-        <span className="break-all">{message.content}</span>
+        <span className="neutrix-break-all">{message.content}</span>
 
         {message.attachments && (
-          <div className={'flex flex-wrap gap-2 my-1 ms-auto'}>
+          <div className="neutrix-flex neutrix-flex-wrap neutrix-gap-2 neutrix-my-1 neutrix-ms-auto">
             {message.attachments.map((attachment, index) => (
-              <div className={'relative'}>
+              <div key={index} className="neutrix-relative">
                 {attachment.url && (
                   <img
-                    key={index}
                     alt={attachment.url}
                     src={attachment.url}
-                    className={'w-20 h-20 object-cover rounded-lg border'}
+                    className="neutrix-w-20 neutrix-h-20 neutrix-object-cover neutrix-rounded-lg neutrix-border"
                   />
                 )}
               </div>
@@ -48,7 +42,7 @@ const ReceiverMessage = ({ message }: { message: ChatMessage }) => {
           </div>
         )}
 
-        <div className="font-light text-[11px] text-right mt-auto">
+        <div className="neutrix-font-light neutrix-text-[11px] neutrix-text-right neutrix-mt-auto">
           {format(message?.createdAt || new Date(), 'hh:mm a')}
         </div>
       </div>

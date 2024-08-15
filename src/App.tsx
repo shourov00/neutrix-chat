@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import './global.css'
+import './neutrix.css'
 import { Survey, SurveyEnumType } from '@/models/surveyModels'
 import InviteDialog from '@/src/components/InviteDialog'
 import RatingDialog from '@/src/components/RatingDialog'

@@ -118,10 +118,14 @@ const ChatInputBar = ({ onSendMessage, setChatHeight }: Props) => {
   }
 
   return (
-    <div className={'p-2 w-full shadow-t-md h-full pr-4'}>
+    <div
+      className={
+        'neutrix-p-2 neutrix-w-full neutrix-shadow-t-md neutrix-h-full neutrix-pr-4'
+      }
+    >
       <EmojiPicker
         open={isEmoji}
-        className={'mx-auto'}
+        className={'neutrix-mx-auto'}
         height={300}
         width={'100%'}
         style={{
@@ -135,20 +139,26 @@ const ChatInputBar = ({ onSendMessage, setChatHeight }: Props) => {
       />
 
       {files.length > 0 && (
-        <div className={'flex flex-wrap gap-2 mb-1'}>
+        <div
+          className={
+            'neutrix-flex neutrix-flex-wrap neutrix-gap-2 neutrix-mb-1'
+          }
+        >
           {files.map((file) => (
-            <div key={file.name} className={'relative'}>
+            <div key={file.name} className={'neutrix-relative'}>
               <img
                 alt={file.name}
                 src={URL.createObjectURL(file)}
-                className={'w-14 h-14 object-cover rounded-lg border'}
+                className={
+                  'neutrix-w-14 neutrix-h-14 neutrix-object-cover neutrix-rounded-lg neutrix-border'
+                }
               />
               <XIcon
                 onClick={() =>
                   setFiles(files.filter((item) => item.name !== file.name))
                 }
                 className={
-                  'w-4 h-4 text-red-400 cursor-pointer absolute right-[2px] top-[2px]'
+                  'neutrix-w-4 neutrix-h-4 neutrix-text-red-400 neutrix-cursor-pointer neutrix-absolute neutrix-right-[2px] neutrix-top-[2px]'
                 }
               />
             </div>
@@ -156,10 +166,10 @@ const ChatInputBar = ({ onSendMessage, setChatHeight }: Props) => {
         </div>
       )}
 
-      <div className={'flex gap-2 items-end'}>
+      <div className={'neutrix-flex neutrix-gap-2 items-end'}>
         <Textarea
           className={
-            'min-h-fit h-auto bg-transparent border-none font-semibold focus-visible:ring-0 focus-visible:ring-offset-0'
+            'neutrix-min-h-fit neutrix-h-auto neutrix-bg-transparent neutrix-border-none neutrix-font-semibold neutrix-focus-visible:ring-0 neutrix-focus-visible:ring-offset-0'
           }
           ref={textAreaRef}
           rows={1}
@@ -170,22 +180,31 @@ const ChatInputBar = ({ onSendMessage, setChatHeight }: Props) => {
         />
         <Button
           size={'icon'}
-          className={'min-w-8 h-8'}
+          className={'neutrix-min-w-8 neutrix-h-8'}
           onClick={handleSendMessage}
         >
-          <SendHorizonal className={'w-5 h-5'} />
+          <SendHorizonal className={'neutrix-w-5 neutrix-h-5'} />
         </Button>
         <div
-          className={cn('p-1 rounded-lg mx-auto', isEmoji && 'bg-secondary')}
+          className={cn(
+            'neutrix-p-1 neutrix-rounded-lg neutrix-mx-auto',
+            isEmoji && 'neutrix-bg-secondary',
+          )}
         >
           <Smile
-            className={'w-6 h-6 cursor-pointer hover:opacity-75'}
+            className={
+              'neutrix-w-6 neutrix-h-6 neutrix-cursor-pointer hover:neutrix-opacity-75'
+            }
             onClick={() => setIsEmoji(!isEmoji)}
           />
         </div>
         <div className={'p-1 relative'}>
           <label htmlFor="file-upload">
-            <ImageIcon className={'w-6 h-6 cursor-pointer hover:opacity-75'} />
+            <ImageIcon
+              className={
+                'neutrix-w-6 neutrix-h-6 neutrix-cursor-pointer hover:neutrix-opacity-75'
+              }
+            />
           </label>
           <input
             id="file-upload"
@@ -194,7 +213,9 @@ const ChatInputBar = ({ onSendMessage, setChatHeight }: Props) => {
             name="files"
             type="file"
             multiple
-            className={'absolute top-0 left-0 w-[30px] cursor-pointer hidden'}
+            className={
+              'neutrix-absolute neutrix-top-0 neutrix-left-0 neutrix-w-[30px] neutrix-cursor-pointer neutrix-hidden'
+            }
             onChange={handleFileUpload}
           />
         </div>

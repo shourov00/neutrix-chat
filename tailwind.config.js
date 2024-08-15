@@ -4,6 +4,7 @@ const { fontFamily } = require('tailwindcss/defaultTheme')
 module.exports = {
   darkMode: ['class'],
   content: ['./src/**/*.{ts,tsx,html,js}'],
+  prefix: 'neutrix-',
   theme: {
     extend: {
       boxShadow: {

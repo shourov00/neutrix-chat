@@ -19,7 +19,7 @@ const DialogOverlay = React.forwardRef<
   <DialogPrimitive.Overlay
     ref={ref}
     className={cn(
-      'fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
+      'neutrix-fixed neutrix-inset-0 neutrix-z-50 neutrix-bg-black/80 data-[state=open]:neutrix-animate-in data-[state=closed]:neutrix-animate-out data-[state=closed]:neutrix-fade-out-0 data-[state=open]:neutrix-fade-in-0',
       className,
     )}
     {...props}
@@ -53,17 +53,16 @@ const DialogContent = React.forwardRef<
       <DialogPrimitive.Content
         ref={ref}
         className={cn(
-          `shadow-xl outline-none group p-4 fixed bottom-[20px] right-[20px] z-[10000] grid w-full max-w-lg gap-4 bg-background duration-200 ${animationClassName || 'shadow-xl outline-none group p-4 fixed bottom-[20px] right-[20px] z-[10000] grid w-full max-w-lg gap-4 bg-background duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%]'} rounded-xl',
-          } rounded-xl`,
+          `neutrix-shadow-xl neutrix-outline-none neutrix-group neutrix-p-4 neutrix-fixed neutrix-bottom-[20px] neutrix-right-[20px] neutrix-z-[10000] neutrix-grid neutrix-w-full neutrix-max-w-lg neutrix-gap-4 neutrix-bg-background neutrix-duration-200 ${animationClassName || 'neutrix-shadow-xl neutrix-outline-none neutrix-group neutrix-p-4 neutrix-fixed neutrix-bottom-[20px] neutrix-right-[20px] neutrix-z-[10000] neutrix-grid neutrix-w-full neutrix-max-w-lg neutrix-gap-4 neutrix-bg-background neutrix-duration-200 data-[state=open]:neutrix-animate-in data-[state=closed]:neutrix-animate-out data-[state=closed]:neutrix-fade-out-0 data-[state=open]:neutrix-fade-in-0 data-[state=closed]:neutrix-zoom-out-95 data-[state=open]:neutrix-zoom-in-95 data-[state=closed]:neutrix-slide-out-to-left-1/2 data-[state=closed]:neutrix-slide-out-to-top-[48%] data-[state=open]:neutrix-slide-in-from-left-1/2 data-[state=open]:neutrix-slide-in-from-top-[48%]'} neutrix-rounded-xl`,
           className,
         )}
         {...props}
       >
         {children}
         {isClose && (
-          <DialogPrimitive.Close className="text-primary invisible group-hover:visible transition-all bg-background rounded-xl shadow-md p-1.5 absolute -right-2 -top-4 opacity-70 ring-offset-background hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
-            <X className="h-5 w-5" />
-            <span className="sr-only">Close</span>
+          <DialogPrimitive.Close className="neutrix-text-primary neutrix-invisible group-hover:neutrix-visible neutrix-transition-all neutrix-bg-background neutrix-rounded-xl neutrix-shadow-md neutrix-p-1.5 neutrix-absolute -neutrix-right-2 -neutrix-top-4 neutrix-opacity-70 neutrix-ring-offset-background hover:neutrix-opacity-100 neutrix-focus:outline-neutrix-focus:ring-2 neutrix-focus:ring-ring neutrix-focus:ring-offset-2 neutrix-disabled:pointer-events-none data-[state=open]:neutrix-bg-accent data-[state=open]:neutrix-text-muted-foreground">
+            <X className="neutrix-h-5 neutrix-w-5" />
+            <span className="neutrix-sr-only">Close</span>
           </DialogPrimitive.Close>
         )}
       </DialogPrimitive.Content>
@@ -78,7 +77,7 @@ const DialogHeader = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      'flex flex-col space-y-2 text-center sm:text-left',
+      'neutrix-flex neutrix-flex-col neutrix-space-y-2 neutrix-text-center sm:neutrix-text-left',
       className,
     )}
     {...props}
@@ -92,7 +91,7 @@ const DialogFooter = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      'flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2',
+      'neutrix-flex neutrix-flex-col-reverse sm:neutrix-flex-row sm:neutrix-justify-end sm:neutrix-space-x-2',
       className,
     )}
     {...props}
@@ -107,7 +106,7 @@ const DialogTitle = React.forwardRef<
   <DialogPrimitive.Title
     ref={ref}
     className={cn(
-      'text-base font-semibold leading-none tracking-tight',
+      'neutrix-text-base neutrix-font-semibold neutrix-leading-none neutrix-tracking-tight',
       className,
     )}
     {...props}
@@ -121,7 +120,7 @@ const DialogDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Description
     ref={ref}
-    className={cn('text-sm text-muted-foreground', className)}
+    className={cn('neutrix-text-sm neutrix-text-muted-foreground', className)}
     {...props}
   />
 ))

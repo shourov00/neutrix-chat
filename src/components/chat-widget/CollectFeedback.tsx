@@ -42,15 +42,25 @@ const CollectFeedback = ({ message, handleCloseChat, isCloseChat }: Props) => {
 
   return (
     <>
-      <div className={'bg-primary p-4 rounded-lg text-white my-4'}>
+      <div
+        className={
+          'neutrix-bg-primary neutrix-p-4 neutrix-rounded-lg neutrix-text-white neutrix-my-4'
+        }
+      >
         <div>How was your conversation with {message?.name}?</div>
-        <div className={'flex gap-3 text-center justify-center mt-4'}>
+        <div
+          className={
+            'neutrix-flex neutrix-gap-3 neutrix-text-center neutrix-justify-center neutrix-mt-4'
+          }
+        >
           {ratings.map(({ id, emoji }) => (
             <span
               key={id}
               className={cn(
-                'cursor-pointer text-4xl pt-[7px] p-1 w-[50px] h-[47px] flex items-center',
-                visitor.chatRating === id && 'bg-[#1b2e4b] rounded-xl text-3xl',
+                'neutrix-cursor-pointer neutrix-text-4xl neutrix-pt-[7px] neutrix-p-1 neutrix-w-[50px] neutrix-h-[47px] neutrix-flex neutrix-items-center',
+                visitor.chatRating === id &&
+                  'neutrix-bg-[#1b2e4b] neutrix-rounded-xl neutrix-text-3xl',
+                'neutrix-ms-auto',
               )}
               onClick={() => {
                 if (visitor.chatRating > 0) {
@@ -67,10 +77,10 @@ const CollectFeedback = ({ message, handleCloseChat, isCloseChat }: Props) => {
       </div>
 
       {isCloseChat && (
-        <div className={'text-sm text-center mb-2'}>
+        <div className={'neutrix-text-sm neutrix-text-center neutrix-mb-2'}>
           Have anything else to say?
           <Button
-            className={'underline'}
+            className={'neutrix-underline'}
             variant={'link'}
             onClick={() => handleCloseChat(false)}
           >

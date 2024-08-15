@@ -59,7 +59,7 @@ const ChatDetailsForm = ({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-4 flex flex-col h-full"
+        className="neutrix-space-y-4 neutrix-flex neutrix-flex-col neutrix-h-full"
       >
         <FormField
           control={form.control}
@@ -69,7 +69,7 @@ const ChatDetailsForm = ({
               <FormControl>
                 <Input
                   className={
-                    'mt-2 bg-secondary border-none shadow hover:shadow-lg transition-all placeholder:font-semibold'
+                    'neutrix-mt-2 neutrix-bg-secondary neutrix-border-none neutrix-shadow hover:neutrix-shadow-lg neutrix-transition-all placeholder:neutrix-font-semibold'
                   }
                   placeholder={messageForm?.preQualification?.nameLabel}
                   {...field}
@@ -88,7 +88,7 @@ const ChatDetailsForm = ({
               <FormControl>
                 <Input
                   className={
-                    'bg-secondary border-none shadow hover:shadow-lg transition-all placeholder:font-semibold'
+                    'neutrix-bg-secondary neutrix-border-none neutrix-shadow hover:neutrix-shadow-lg neutrix-transition-all placeholder:neutrix-font-semibold'
                   }
                   placeholder={messageForm?.preQualification?.contactLabel}
                   {...field}
@@ -108,7 +108,7 @@ const ChatDetailsForm = ({
                 <Textarea
                   rows={6}
                   className={
-                    'resize-none bg-secondary border-none shadow hover:shadow-lg transition-all placeholder:font-semibold'
+                    'neutrix-resize-none neutrix-bg-secondary neutrix-border-none neutrix-shadow hover:neutrix-shadow-lg neutrix-transition-all placeholder:neutrix-font-semibold'
                   }
                   placeholder={messageForm?.preQualification?.questionLabel}
                   {...field}
@@ -119,8 +119,13 @@ const ChatDetailsForm = ({
           )}
         />
 
-        <Button type="submit" className={'font-bold py-6 w-fit ms-auto'}>
-          <SendHorizonal className={'w-5 h-5 mr-2'} />
+        <Button
+          type="submit"
+          className={
+            'neutrix-font-bold neutrix-py-6 neutrix-w-fit neutrix-ms-auto'
+          }
+        >
+          <SendHorizonal className={'neutrix-w-5 neutrix-h-5 neutrix-mr-2'} />
           {messageForm?.buttonLabel}
         </Button>
       </form>

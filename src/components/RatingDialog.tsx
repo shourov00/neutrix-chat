@@ -137,7 +137,9 @@ const RatingDialog = ({ survey, id, handleResponse }: props) => {
             onInteractOutside={(e) => {
               e.preventDefault()
             }}
-            className={'rounded-2xl max-w-[250px] space-y-1'}
+            className={
+              'neutrix-rounded-2xl neutrix-max-w-[250px] neutrix-space-y-1'
+            }
           >
             <DialogHeader>
               <DialogTitle>{question?.title} </DialogTitle>
@@ -154,7 +156,7 @@ const RatingDialog = ({ survey, id, handleResponse }: props) => {
             {questions?.length > 1 && (
               <div
                 className={
-                  'flex items-center justify-between text-sm text-muted-foreground mt-1'
+                  'neutrix-flex neutrix-items-center neutrix-justify-between neutrix-text-sm neutrix-text-muted-foreground neutrix-mt-1'
                 }
               >
                 <ActionButton
@@ -163,7 +165,7 @@ const RatingDialog = ({ survey, id, handleResponse }: props) => {
                   disabled={current === 1}
                   onClick={movePrevious}
                 />
-                <div className={'tracking-wider'}>
+                <div className={'neutrix-tracking-wider'}>
                   {current}/{questions?.length}
                 </div>
                 <ActionButton

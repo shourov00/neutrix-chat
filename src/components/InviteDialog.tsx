@@ -44,7 +44,9 @@ const InviteDialog = ({ invite, survey, id, handleResponse }: props) => {
             onInteractOutside={(e) => {
               e.preventDefault()
             }}
-            className={'rounded-2xl max-w-[250px] space-y-1'}
+            className={
+              'neutrix-rounded-2xl neutrix-max-w-[250px] neutrix-space-y-1'
+            }
           >
             <DialogHeader>
               <DialogTitle>{invite?.title}</DialogTitle>
@@ -53,11 +55,11 @@ const InviteDialog = ({ invite, survey, id, handleResponse }: props) => {
               )}
             </DialogHeader>
 
-            <div className={'flex flex-col gap-2'}>
+            <div className={'neutrix-flex neutrix-flex-col neutrix-gap-2'}>
               <ActionButton
                 title={invite?.buttonYesLabel}
                 className={
-                  'bg-secondary w-full shadow hover:shadow-md justify-start'
+                  'neutrix-bg-secondary neutrix-w-full neutrix-shadow hover:neutrix-shadow-md neutrix-justify-start'
                 }
                 onClick={() => {
                   setShowQuestions(true)
@@ -67,7 +69,7 @@ const InviteDialog = ({ invite, survey, id, handleResponse }: props) => {
               <ActionButton
                 title={invite?.buttonNoLabel}
                 className={
-                  'bg-secondary w-full shadow hover:shadow-md justify-start'
+                  'neutrix-bg-secondary neutrix-w-full neutrix-shadow hover:neutrix-shadow-md neutrix-justify-start'
                 }
                 onClick={close}
               />

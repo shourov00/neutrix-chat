@@ -83,27 +83,39 @@ const AnnouncementLightboxDialog = ({
             e.preventDefault()
           }}
           className={cn(
-            'rounded-lg max-w-md space-y-1 left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] p-0 h-fit',
-            display?.reversed && 'bg-primary text-white',
+            'neutrix-rounded-lg neutrix-max-w-md neutrix-space-y-1 neutrix-left-[50%] neutrix-top-[50%] neutrix-translate-x-[-50%] neutrix-translate-y-[-50%] neutrix-p-0 neutrix-h-fit',
+            display?.reversed && 'neutrix-bg-primary neutrix-text-white',
           )}
           overlay
           overlayClassName={
-            display?.overlayState === 'dark' ? 'bg-black/60' : 'bg-white/60'
+            display?.overlayState === 'dark'
+              ? 'neutrix-bg-black/60'
+              : 'neutrix-bg-white/60'
           }
           isClose={false}
         >
           <img
             src={display?.image?.url || ''}
             alt={display?.image?.name || ''}
-            className={'rounded-t-lg object-cover w-full h-[160px]'}
+            className={
+              'neutrix-rounded-t-lg neutrix-object-cover neutrix-w-full neutrix-h-[160px]'
+            }
           />
 
-          <div className={'pb-6 px-6 pt-2 mx-auto text-center'}>
+          <div
+            className={
+              'neutrix-pb-6 neutrix-px-6 neutrix-pt-2 neutrix-mx-auto neutrix-text-center'
+            }
+          >
             <DialogHeader>
-              <DialogTitle className={'text-center text-lg font-bold'}>
+              <DialogTitle
+                className={
+                  'neutrix-text-center neutrix-text-lg neutrix-font-bold'
+                }
+              >
                 {display?.title}
               </DialogTitle>
-              <DialogDescription className={'text-center'}>
+              <DialogDescription className={'neutrix-text-center'}>
                 {display?.content}
               </DialogDescription>
             </DialogHeader>
@@ -111,21 +123,21 @@ const AnnouncementLightboxDialog = ({
             {display?.actionButton?.action === 'dismiss' ? (
               <Button
                 className={cn(
-                  'w-full',
+                  'neutrix-w-full',
                   display?.reversed &&
-                    'bg-white text-primary hover:bg-white hover:text-primary',
+                    'neutrix-bg-white neutrix-text-primary hover:neutrix-bg-white hover:text-primary',
                 )}
                 onClick={() => handleCompleteResponse('dismissed')}
               >
                 {display?.actionButton?.dismissLabel}
               </Button>
             ) : (
-              <div className={'flex gap-2 flex-col'}>
+              <div className={'neutrix-flex neutrix-gap-2 neutrix-flex-col'}>
                 <Button
                   className={cn(
-                    'w-full',
+                    'neutrix-w-full',
                     display?.reversed &&
-                      'bg-white text-primary hover:bg-white hover:text-primary',
+                      'neutrix-bg-white neutrix-text-primary hover:neutrix-bg-white hover:neutrix-text-primary',
                   )}
                   onClick={() => handleCompleteResponse('completed')}
                   asChild
@@ -138,9 +150,9 @@ const AnnouncementLightboxDialog = ({
                 <Button
                   variant={'outline'}
                   className={cn(
-                    'w-full no-underline',
+                    'neutrix-w-full neutrix-no-underline',
                     display?.reversed &&
-                      'bg-white text-primary hover:bg-white hover:text-primary',
+                      'neutrix-bg-white neutrix-text-primary hover:neutrix-bg-white hover:neutrix-text-primary',
                   )}
                   onClick={() => handleCompleteResponse('dismissed')}
                 >

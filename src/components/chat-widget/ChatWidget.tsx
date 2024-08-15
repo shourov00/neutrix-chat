@@ -172,8 +172,8 @@ const ChatWidget = ({ chatSettings, companyInfo }: Props) => {
         {chatSettings?.chat?.launcher?.launcherType === 'default' ? (
           <Button
             className={cn(
-              'p-[12px] bottom-0 right-0 fixed mb-4 bg-white transition-all hover:bg-white h-14 w-14 rounded-2xl drop-shadow-lg hover:drop-shadow-xl',
-              isChatPositionLeft && 'left-0',
+              'neutrix-p-[12px] neutrix-bottom-0 neutrix-right-0 neutrix-fixed neutrix-mb-4 neutrix-bg-white neutrix-transition-all hover:neutrix-bg-white neutrix-h-14 neutrix-w-14 neutrix-rounded-2xl neutrix-drop-shadow-lg hover:neutrix-drop-shadow-xl',
+              isChatPositionLeft && 'neutrix-left-0',
             )}
             style={{
               marginLeft: isChatPositionLeft
@@ -197,8 +197,8 @@ const ChatWidget = ({ chatSettings, companyInfo }: Props) => {
         ) : (
           <Button
             className={cn(
-              'p-3 rounded-md font-bold bottom-0 right-0 fixed mb-0 mr-4 bg-white transition-all hover:bg-white text-primary drop-shadow-lg hover:drop-shadow-xl text-xs',
-              isChatPositionLeft && 'left-0',
+              'neutrix-p-3 neutrix-rounded-md neutrix-font-bold neutrix-bottom-0 neutrix-right-0 neutrix-fixed neutrix-mb-0 neutrix-mr-4 neutrix-bg-white neutrix-transition-all hover:neutrix-bg-white neutrix-text-primary neutrix-drop-shadow-lg hover:neutrix-drop-shadow-xl neutrix-text-xs',
+              isChatPositionLeft && 'neutrix-left-0',
             )}
             style={{
               marginLeft: isChatPositionLeft
@@ -211,7 +211,7 @@ const ChatWidget = ({ chatSettings, companyInfo }: Props) => {
             onClick={connect}
           >
             <MessageCircle
-              className={'w-4 h-4 me-2'}
+              className={'neutrix-w-4 neutrix-h-4 neutrix-me-2'}
               color={chatSettings?.chat?.accentColor}
               fill={chatSettings?.chat?.accentColor}
             />
@@ -223,10 +223,10 @@ const ChatWidget = ({ chatSettings, companyInfo }: Props) => {
         onInteractOutside={(e) => {
           e.preventDefault()
         }}
-        animationClassName={'data-[state=closed]:animate-slideInDown'}
+        animationClassName={'data-[state=closed]:neutrix-animate-slideInDown'}
         className={cn(
-          'w-fit sm:max-w-[400px] bottom-0 right-0 p-0 gap-0',
-          isChatPositionLeft && 'left-0',
+          'neutrix-w-fit sm:neutrix-max-w-[400px] neutrix-bottom-0 neutrix-right-0 neutrix-p-0 neutrix-gap-0',
+          isChatPositionLeft && 'neutrix-left-0',
         )}
         style={{
           marginLeft: isChatPositionLeft
@@ -244,13 +244,15 @@ const ChatWidget = ({ chatSettings, companyInfo }: Props) => {
       >
         <DialogHeader
           className={cn(
-            'bg-secondary rounded-t-xl p-4 flex-row flex items-center gap-4 relative space-y-0',
-            isAccent && 'bg-primary',
+            'neutrix-bg-secondary neutrix-rounded-t-xl neutrix-p-4 neutrix-flex-row neutrix-flex neutrix-items-center neutrix-gap-4 neutrix-relative neutrix-space-y-0',
+            isAccent && 'neutrix-bg-primary',
           )}
         >
           <Avatar>
             <AvatarImage
-              className={'rounded-full object-cover w-8 h-8 shadow-xl'}
+              className={
+                'neutrix-rounded-full neutrix-object-cover neutrix-w-8 neutrix-h-8 neutrix-shadow-xl'
+              }
               src={
                 chatSettings?.chat?.introduction?.headerImage === 'companyIcon'
                   ? companyInfo?.companyImage
@@ -259,7 +261,7 @@ const ChatWidget = ({ chatSettings, companyInfo }: Props) => {
             />
             <AvatarFallback
               className={
-                'bg-[#fbf6c6] font-bold text-sm border rounded-full border-white p-2'
+                'neutrix-bg-[#fbf6c6] neutrix-font-bold neutrix-text-sm neutrix-border neutrix-rounded-full neutrix-border-white neutrix-p-2'
               }
             >
               {getNameInitials(companyInfo?.fullName)}
@@ -268,16 +270,16 @@ const ChatWidget = ({ chatSettings, companyInfo }: Props) => {
           <div>
             <DialogTitle
               className={cn(
-                'text-lg font-bold text-primary',
-                isAccent && 'text-white',
+                'neutrix-text-lg neutrix-font-bold neutrix-text-primary',
+                isAccent && 'neutrix-text-white',
               )}
             >
               {chatSettings?.chat?.introduction?.companyTitle}
             </DialogTitle>
             {/*<DialogDescription*/}
             {/*  className={cn(*/}
-            {/*    'text-xs text-primary font-light',*/}
-            {/*    isAccent && 'text-secondary',*/}
+            {/*    'neutrix-text-xs neutrix-text-primary neutrix-font-light',*/}
+            {/*    isAccent && 'neutrix-text-secondary',*/}
             {/*  )}*/}
             {/*>*/}
             {/*  Representative*/}
@@ -285,22 +287,34 @@ const ChatWidget = ({ chatSettings, companyInfo }: Props) => {
           </div>
 
           {isLoading && (
-            <Loading className={'text-white absolute right-1 bottom-2'} />
+            <Loading
+              className={
+                'neutrix-text-white neutrix-absolute neutrix-right-1 neutrix-bottom-2'
+              }
+            />
           )}
 
           <Button
             size={'icon'}
             className={cn(
-              'absolute right-1 top-0 hover:opacity-75 bg-transparent hover:bg-transparent text-primary',
-              isAccent && 'text-white',
+              'neutrix-absolute neutrix-right-1 neutrix-top-0 hover:neutrix-opacity-75 neutrix-bg-transparent hover:neutrix-bg-transparent neutrix-text-primary',
+              isAccent && 'neutrix-text-white',
             )}
             onClick={() => setOpen(false)}
           >
-            <Minus className={'w-6 h-6'} />{' '}
+            <Minus className={'neutrix-w-6 neutrix-h-6'} />{' '}
           </Button>
         </DialogHeader>
-        <ScrollArea className="w-full" style={{ height: `${chatHeight}px` }}>
-          <div className={'p-5 flex flex-col gap-5'} ref={chatContainerRef}>
+        <ScrollArea
+          className="neutrix-w-full"
+          style={{ height: `${chatHeight}px` }}
+        >
+          <div
+            className={
+              'neutrix-p-5 neutrix-flex neutrix-flex-col neutrix-gap-5'
+            }
+            ref={chatContainerRef}
+          >
             {!isAwayFrom &&
               messages.map((message: ChatMessage) =>
                 chatSettings?.chat?.advanced?.feedbackCollection &&
@@ -327,7 +341,7 @@ const ChatWidget = ({ chatSettings, companyInfo }: Props) => {
             {!isAwayFrom && messages?.length === 1 && (
               <div
                 className={
-                  'text-sm font-semibold bg-secondary p-4 rounded-md text-primary/75'
+                  'neutrix-text-sm neutrix-font-semibold neutrix-bg-secondary neutrix-p-4 neutrix-rounded-md neutrix-text-primary/75'
                 }
               >
                 {chatSettings?.chat?.messaging?.waiting}
@@ -344,9 +358,9 @@ const ChatWidget = ({ chatSettings, companyInfo }: Props) => {
                 <>
                   <div
                     className={cn(
-                      'text-sm font-semibold',
+                      'neutrix-text-sm neutrix-font-semibold',
                       !isRequirePreQualification &&
-                        'bg-secondary p-4 rounded-md my-6',
+                        'neutrix-bg-secondary neutrix-p-4 neutrix-rounded-md neutrix-my-6',
                     )}
                   >
                     {chatSettings?.chat?.messaging?.message}

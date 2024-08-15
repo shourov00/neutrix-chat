@@ -84,14 +84,16 @@ const AnnouncementStickerDialog = ({
             e.preventDefault()
           }}
           className={cn(
-            'rounded-xl max-w-[250px] space-y-1',
-            reverseColor && 'bg-primary text-white',
+            'neutrix-rounded-xl neutrix-max-w-[250px] neutrix-space-y-1',
+            reverseColor && 'neutrix-bg-primary neutrix-text-white',
           )}
         >
           <img
             src={display?.image?.url || ''}
             alt={display?.image?.name || ''}
-            className={'rounded-t-lg object-cover w-full h-[160px] rounded-lg'}
+            className={
+              'neutrix-rounded-t-lg neutrix-object-cover neutrix-w-full neutrix-h-[160px] neutrix-rounded-lg'
+            }
           />
 
           <DialogHeader>
@@ -101,9 +103,9 @@ const AnnouncementStickerDialog = ({
 
           <Button
             className={cn(
-              'w-full',
+              'neutrix-w-full',
               reverseColor &&
-                'bg-white text-primary hover:bg-white hover:text-primary',
+                'neutrix-bg-white neutrix-text-primary hover:neutrix-bg-white hover:neutrix-text-primary',
             )}
             onClick={() => handleCompleteResponse('completed')}
           >

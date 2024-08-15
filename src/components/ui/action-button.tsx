@@ -3,7 +3,7 @@ import React from 'react'
 import { cn } from '@/lib/utils'
 import { CheckIcon } from 'lucide-react'
 
-interface props extends ButtonProps {
+interface Props extends ButtonProps {
   title: string
   isCheckBox?: boolean
   isChecked?: boolean
@@ -15,25 +15,26 @@ const ActionButton = ({
   isChecked,
   isCheckBox,
   ...props
-}: props) => {
+}: Props) => {
   return (
     <Button
       variant={'ghost'}
       className={cn(
-        'w-fit bg-white shadow-md hover:shadow-lg hover:bg-white transition-all font-bold',
+        'neutrix-w-fit neutrix-bg-white neutrix-shadow-md hover:shadow-lg hover:neutrix-bg-white neutrix-transition-all neutrix-font-bold',
         className,
-        isChecked && 'bg-primary hover:bg-primary text-white hover:text-white',
+        isChecked &&
+          'neutrix-bg-primary hover:neutrix-bg-primary neutrix-text-white hover:text-white',
       )}
       {...props}
     >
       {isCheckBox && (
         <div
           className={cn(
-            'w-4 h-4 border border-primary rounded mr-2',
-            isChecked && 'bg-primary',
+            'neutrix-w-4 neutrix-h-4 neutrix-border neutrix-border-primary neutrix-rounded neutrix-mr-2',
+            isChecked && 'neutrix-bg-primary',
           )}
         >
-          {isChecked && <CheckIcon className={'w-3.5 h-3.5'} />}
+          {isChecked && <CheckIcon className={'neutrix-w-3.5 neutrix-h-3.5'} />}
         </div>
       )}
       {title}
