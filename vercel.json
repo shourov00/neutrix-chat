@@ -1,0 +1,3 @@
+{
+  "rewrites": [{ "source": "/neutrix.js", "destination": "/dist/neutrix.js" }]
+}
