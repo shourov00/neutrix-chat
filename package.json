@@ -11,6 +11,7 @@
     "format": "prettier --write --ignore-path .gitignore .",
     "prepare": "husky"
   },
+
   "keywords": [],
   "author": "",
   "license": "ISC",
