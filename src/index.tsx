@@ -41,11 +41,9 @@ import QueryClientProvider from '@/src/QueryClientProvider'
   const scriptSrc = getCurrentScriptSrc()
   const queryParams = getQueryParams(scriptSrc)
   const siteId =
-    process.env.REACT_APP_ENVIRONMENT !== 'local'
-      ? queryParams.siteId
-      : '123123123'
+    process.env.ENVIRONMENT !== 'local' ? queryParams.siteId : '123123123'
 
-  if (process.env.REACT_APP_ENVIRONMENT !== 'local' && !siteId) {
+  if (process.env.ENVIRONMENT !== 'local' && !siteId) {
     throw new Error('siteId not found')
   }
 
