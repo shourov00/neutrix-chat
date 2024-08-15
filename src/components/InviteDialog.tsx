@@ -4,7 +4,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/src/components/ui/dialog'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { InviteSettings, Survey, SurveyEnumType } from '@/models/surveyModels'
 import ActionButton from '@/src/components/ui/action-button'
 import RatingDialog from '@/src/components/RatingDialog'
@@ -13,6 +13,7 @@ import { useDialog } from '@/hooks/useDialog'
 import OpenEndedDialog from '@/src/components/OpenEndedDialog'
 import { VisitorResponse } from '@/models/responseModels'
 import MultipleChoiceDialog from '@/src/components/MultipleChoiceDialog'
+import { handleSurveyResponse } from '@/utils/surveys.utils'
 
 interface props {
   invite: InviteSettings
@@ -22,8 +23,18 @@ interface props {
 }
 
 const InviteDialog = ({ invite, survey, id, handleResponse }: props) => {
-  const { close } = useDialog()
+  const { close, currentDialog } = useDialog()
   const [showQuestions, setShowQuestions] = React.useState(false)
+
+  useEffect(() => {
+    if (currentDialog === id) {
+      const response = handleSurveyResponse({
+        status: 'viewed',
+        survey,
+      })
+      handleResponse(response)
+    }
+  }, [currentDialog])
 
   return (
     <>
