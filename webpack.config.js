@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const { TsconfigPathsPlugin } = require('tsconfig-paths-webpack-plugin')
 const Dotenv = require('dotenv-webpack')
+const webpack = require('webpack')
 
 module.exports = {
   entry: './src/index.tsx',
@@ -24,7 +25,15 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './index.html',
     }),
-    new Dotenv(),
+    new webpack.DefinePlugin({
+      'process.env.ENVIRONMENT': JSON.stringify(process.env.ENVIRONMENT),
+      'process.env.REACT_APP_SERVER_API_ENDPOINT': JSON.stringify(
+        process.env.REACT_APP_SERVER_API_ENDPOINT,
+      ),
+      'process.env.REACT_APP_CHAT_WEBSOCKET_API_ENDPOINT': JSON.stringify(
+        process.env.REACT_APP_CHAT_WEBSOCKET_API_ENDPOINT,
+      ),
+    }),
   ],
   module: {
     rules: [
