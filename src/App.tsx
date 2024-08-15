@@ -31,6 +31,7 @@ interface props {
   siteId: string
 }
 
+console.log('rabbi', process.env.SERVER_API_ENDPOINT)
 export default function App({ siteId }: props) {
   const [visitor] = useVisitor()
   const { data, isLoading } = useSiteData(visitor.id)
