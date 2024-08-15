@@ -6,7 +6,7 @@ interface UseWebSocketProps {
   onClose?: () => void
 }
 
-const URL = process.env.CHAT_WEBSOCKET_API_ENDPOINT
+const URL = process.env.REACT_APP_CHAT_WEBSOCKET_API_ENDPOINT
 
 const useWebSocket = ({ onMessage, onOpen, onClose }: UseWebSocketProps) => {
   const socket = useRef<WebSocket | null>(null)

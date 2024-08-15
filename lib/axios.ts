@@ -2,7 +2,7 @@ import axios from 'axios'
 import { getSiteIdAtom } from '@/hooks/siteIdStore'
 
 const axiosInstance = axios.create({
-  baseURL: process.env.SERVER_API_ENDPOINT + 'api/v1/',
+  baseURL: process.env.REACT_APP_SERVER_API_ENDPOINT + 'api/v1/',
 })
 
 axiosInstance.interceptors.request.use(
