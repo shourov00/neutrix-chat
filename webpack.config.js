@@ -24,10 +24,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './index.html',
     }),
-    new Dotenv({
-      path: './.env',
-      safe: true,
-    }),
+    new Dotenv(),
   ],
   module: {
     rules: [
